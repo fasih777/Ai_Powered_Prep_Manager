@@ -1,0 +1,178 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}</style><style>:root{color-scheme:light dark;--md-bg:#fff;--md-text:rgba(0,0,0,.8);--md-muted:rgba(0,0,0,.6);--md-fill:rgba(0,0,0,.04);--md-fill-strong:rgba(0,0,0,.06);--md-rule:rgba(0,0,0,.1);--md-rule-strong:rgba(0,0,0,.16);--md-link:hsl(210 100% 45%)}@media (prefers-color-scheme:dark){:root:where(:not([data-theme="light"])){--md-bg:#0d0d0d;--md-text:rgba(255,255,255,.85);--md-muted:rgba(255,255,255,.6);--md-fill:rgba(255,255,255,.06);--md-fill-strong:rgba(255,255,255,.09);--md-rule:rgba(255,255,255,.14);--md-rule-strong:rgba(255,255,255,.22);--md-link:hsl(210 100% 72%)}}:root[data-theme="dark"]{color-scheme:dark;--md-bg:#0d0d0d;--md-text:rgba(255,255,255,.85);--md-muted:rgba(255,255,255,.6);--md-fill:rgba(255,255,255,.06);--md-fill-strong:rgba(255,255,255,.09);--md-rule:rgba(255,255,255,.14);--md-rule-strong:rgba(255,255,255,.22);--md-link:hsl(210 100% 72%)}:root[data-theme="light"]{color-scheme:light}@media print{:root,:root[data-theme="dark"]{color-scheme:light;--md-bg:#fff;--md-text:rgba(0,0,0,.8);--md-muted:rgba(0,0,0,.6);--md-fill:rgba(0,0,0,.04);--md-fill-strong:rgba(0,0,0,.06);--md-rule:rgba(0,0,0,.1);--md-rule-strong:rgba(0,0,0,.16);--md-link:hsl(210 100% 45%)}}body{background:var(--md-bg);color:var(--md-text);max-width:720px;margin:0 auto;padding:32px;display:flex;flex-direction:column;gap:10px;font:14px/1.55 -apple-system,BlinkMacSystemFont,'SF Pro','Segoe UI',sans-serif;overflow-wrap:break-word}body>:first-child{margin-top:0}h1,h2,h3,h4,h5,h6{margin:6px 0 0;line-height:1.25;font-weight:600;text-wrap:balance}h1{font-size:1.35em}h2{font-size:1.15em;color:var(--md-muted)}h3,h4,h5,h6{font-size:1em}p,ul,ol,blockquote,table,pre,hr{margin:0}strong{font-weight:600}a{color:var(--md-link);text-decoration:none}a:hover{text-decoration:underline}ul,ol{display:flex;flex-direction:column;gap:6px;padding-left:22px}ul{list-style:disc}ol{list-style:decimal}:is(li,td,th)>*+:is(p,ul,ol,blockquote){margin-top:6px}blockquote{display:flex;flex-direction:column;gap:10px;border-left:2px solid var(--md-rule);padding-left:10px;color:var(--md-muted)}:not(pre)>code{background:var(--md-fill);padding:1px 3px;border-radius:4px;font:.92em 'SF Mono',ui-monospace,Menlo,Consolas,monospace}a>code{background:none;color:inherit}pre{background:var(--md-fill);padding:10px 12px;border-radius:6px;overflow-x:auto;font:12px/1.5 'SF Mono',ui-monospace,Menlo,Consolas,monospace;margin-block:4px}pre code{background:none;padding:0;font:inherit}table{width:100%;border-collapse:separate;border-spacing:2px;font:inherit}th,td{padding:6px 8px;border-radius:3px;text-align:left;vertical-align:top}th{background:var(--md-fill-strong);font-weight:600}td{background:var(--md-fill)}:is(th,td) :not(pre)>code{background:transparent}hr{border:0;border-top:1px solid var(--md-rule-strong);margin-block:10px}img{max-width:100%;height:auto;border-radius:4px}</style>
+</head><body>
+<h1>Technical Requirements Document (TRD)</h1>
+<h2>AI-Powered Prep Manager</h2>
+<p><strong>Version:</strong> 1.0 | <strong>Status:</strong> Draft | <strong>Companion to:</strong> PRD v1.0</p>
+<hr>
+<h2>1. System Overview</h2>
+<p>A pipeline that takes prep photos + category metadata, extracts visual evidence (objects, text, spatial layout), evaluates that evidence against a versioned rule engine (not the LLM's judgment alone), and returns structured per-check verdicts plus an aggregated status.</p>
+<pre><code>[Images + Metadata]
+        │
+        ▼
+ ┌───────────────┐
+ │ Preprocessing │  (quality gate, orientation, crop/zoom regions)
+ └───────┬───────┘
+         ▼
+ ┌────────────────────┐
+ │ Perception Layer    │  VLM detection + OCR + spatial geometry
+ └───────┬─────────────┘
+         ▼
+ ┌────────────────────┐
+ │ Rule Engine          │  category → applicable checks → evaluate evidence
+ └───────┬─────────────┘
+         ▼
+ ┌────────────────────┐
+ │ Aggregator + Report  │  per-check verdicts → overall PREP STATUS
+ └───────┬─────────────┘
+         ▼
+ [Structured JSON + human-readable report] → logging/audit store
+</code></pre>
+<h2>2. Components</h2>
+<h3>2.1 Preprocessing</h3>
+<ul>
+<li>Image quality gate: blur, exposure, resolution thresholds. Images below threshold are tagged <code>low_quality</code>, which downstream forces UNCERTAIN on any check relying on that image.</li>
+<li>Category resolution: map SKU/ASIN or manual category input → applicable rule subset.</li>
+<li>Region proposal: locate label(s), barcode(s), seams/edges as candidate crops for downstream perception (reduces false negatives on small text).</li>
+</ul>
+<h3>2.2 Perception Layer</h3>
+<p>Multiple specialized extraction passes, each producing structured evidence (not a verdict):</p>
+<table>
+<thead>
+<tr>
+<th>Module</th>
+<th>Function</th>
+<th>Output</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Object/segment detector</td>
+<td>Locate polybag boundary, seal line, label(s), barcode region(s)</td>
+<td>bounding boxes + confidence</td>
+</tr>
+<tr>
+<td>OCR engine</td>
+<td>Extract text from suffocation-warning label, expiry date field, handling-mark text/icons</td>
+<td>text + confidence + bbox</td>
+</tr>
+<tr>
+<td>Barcode/label reader</td>
+<td>Decode FNSKU and manufacturer barcode if legible</td>
+<td>decoded value + type + confidence</td>
+</tr>
+<tr>
+<td>Spatial/geometry module</td>
+<td>Determine surface flatness/curvature under label region; detect seam crossing</td>
+<td>surface classification + confidence</td>
+</tr>
+<tr>
+<td>Seal/closure classifier</td>
+<td>Classify polybag opening as sealed/unsealed/taped/heat-sealed</td>
+<td>classification + confidence</td>
+</tr>
+</tbody>
+</table>
+<p>All modules emit <strong>evidence with confidence scores</strong>, never a pass/fail — verdict logic lives entirely in the rule engine.</p>
+<h3>2.3 Rule Engine</h3>
+<ul>
+<li>Consumes a <strong>versioned, structured rule set</strong> (JSON/YAML) — the authoritative source referenced in the challenge — keyed by category and check type.</li>
+<li>Each rule defines: check ID, applicability condition (category, product type), required evidence type(s), pass condition, fail condition, and the confidence threshold below which the check must resolve to UNCERTAIN.</li>
+<li>Example rule schema:</li>
+</ul>
+<pre><code class="language-json">{
+  &#34;check_id&#34;: &#34;fnsku_placement&#34;,
+  &#34;applies_when&#34;: {&#34;category&#34;: &#34;*&#34;},
+  &#34;required_evidence&#34;: [&#34;fnsku_bbox&#34;, &#34;surface_classification&#34;],
+  &#34;pass_if&#34;: &#34;surface_classification == &#39;flat&#39; AND fnsku_bbox.confidence &gt;= 0.8&#34;,
+  &#34;fail_if&#34;: &#34;surface_classification IN [&#39;seam&#39;,&#39;curved_edge&#39;,&#39;opening&#39;]&#34;,
+  &#34;uncertain_if&#34;: &#34;surface_classification.confidence &lt; 0.6 OR fnsku_bbox is null&#34;
+}
+</code></pre>
+<ul>
+<li>The rule engine is deterministic given evidence — this is what prevents the model from &quot;inventing&quot; compliance rules; the LLM/VLM never decides pass/fail directly, it only supplies evidence that the engine evaluates.</li>
+<li>Rule set is versioned; every verdict is stamped with the rule-set version used, for auditability.</li>
+</ul>
+<h3>2.4 Aggregator + Reporting</h3>
+<ul>
+<li>Applies the overall-status rule (§6 of PRD): any FAIL → overall FAIL; else any UNCERTAIN → overall UNCERTAIN; else PASS.</li>
+<li>Produces both a machine-readable JSON payload and the human-readable report format shown in the PRD/challenge example.</li>
+<li>Attaches evidence (cropped image regions, OCR text, confidence) to each check for reviewer traceability.</li>
+</ul>
+<h2>3. Data Model (core objects)</h2>
+<pre><code>PrepReview
+ ├─ review_id
+ ├─ category
+ ├─ rule_set_version
+ ├─ images[]  (image_id, url/ref, quality_flags)
+ ├─ checks[]
+ │    ├─ check_id
+ │    ├─ verdict: PASS | FAIL | UNCERTAIN
+ │    ├─ reason
+ │    ├─ evidence[] (image_id, bbox, extracted_text, confidence)
+ │    └─ rule_id
+ ├─ overall_status: PASS | FAIL | UNCERTAIN
+ ├─ human_override (optional: verdict, reviewer_id, timestamp, note)
+ └─ created_at
+</code></pre>
+<h2>4. Reference Rule Set Management</h2>
+<ul>
+<li>Stored as versioned config, not embedded in prompts or model weights.</li>
+<li>Update workflow: new/changed requirement → rule authored/reviewed by compliance owner → versioned release → rule engine hot-reloads without redeploying the perception layer.</li>
+<li>Category-to-checks mapping is explicit and inspectable (no implicit LLM inference of &quot;which rules apply&quot;).</li>
+</ul>
+<h2>5. Handling Non-Verifiable Requirements</h2>
+<ul>
+<li>Each rule declares whether it is <code>visually_verifiable: true/false</code>.</li>
+<li>Non-visual requirements (e.g., material thickness) are marked <code>visually_verifiable: false</code> at the rule-set level and are <strong>always</strong> reported as <code>UNCERTAIN / NOT VERIFIABLE FROM IMAGE</code>, and excluded from the FAIL-triggering logic — they should never contribute a false FAIL or false PASS.</li>
+<li>Any check where required evidence modules return null or below-confidence-threshold results in UNCERTAIN, with the specific missing evidence named in the reason (e.g., &quot;expiry date region not visible in any supplied image&quot;).</li>
+</ul>
+<h2>6. Model/Tech Approach</h2>
+<ul>
+<li><strong>Perception</strong>: vision-language model(s) for detection/description + dedicated OCR engine (for robustness on small/low-contrast text) + barcode decoding library + a lightweight geometry/segmentation model for surface/seam classification.</li>
+<li><strong>Reasoning/orchestration</strong>: an agent loop that (1) calls perception modules as tools, (2) assembles evidence, (3) invokes the deterministic rule engine, (4) formats output. The LLM does not author verdicts from general knowledge — it is constrained to calling tools and evidence assembly; final pass/fail computation is rule-engine code, not free-form generation.</li>
+<li><strong>Confidence thresholds</strong>: tunable per check; conservative defaults (favor UNCERTAIN over PASS).</li>
+</ul>
+<h2>7. API (illustrative)</h2>
+<pre><code>POST /v1/prep-review
+{
+  &#34;category&#34;: &#34;electronics_small&#34;,
+  &#34;images&#34;: [{&#34;id&#34;: &#34;img1&#34;, &#34;url&#34;: &#34;...&#34;}, ...],
+  &#34;work_order_ref&#34;: &#34;WO-12345&#34;  // context only, not proof
+}
+
+200 OK
+{
+  &#34;review_id&#34;: &#34;...&#34;,
+  &#34;rule_set_version&#34;: &#34;2026.09.1&#34;,
+  &#34;checks&#34;: [ {...}, ... ],
+  &#34;overall_status&#34;: &#34;FAIL&#34;
+}
+</code></pre>
+<h2>8. Non-Functional / Engineering Requirements</h2>
+<ul>
+<li><strong>Determinism</strong>: identical inputs + rule-set version → identical verdicts (perception confidence variance aside).</li>
+<li><strong>Auditability</strong>: every review stores rule_id + evidence + rule_set_version; immutable log.</li>
+<li><strong>Latency target</strong>: p95 &lt; 8s per unit for up to 4 images.</li>
+<li><strong>Extensibility</strong>: adding a check = adding a rule + (if needed) a new evidence extractor; no core pipeline rewrite.</li>
+<li><strong>Observability</strong>: per-check verdict distribution, UNCERTAIN rate, and confidence histograms tracked for drift/calibration monitoring.</li>
+<li><strong>Human-in-the-loop</strong>: override endpoint writes corrections back into a calibration dataset for periodic threshold/model tuning (not automatic retraining in v1).</li>
+</ul>
+<h2>9. Evaluation Plan</h2>
+<ul>
+<li>Curated test set covering all 10 scenarios in PRD §11, plus category-specific variants.</li>
+<li>Metrics: per-check precision/recall, false-PASS rate (target ≈ 0), UNCERTAIN calibration (UNCERTAIN should correlate with genuinely low-evidence cases, verified by human audit).</li>
+<li>Regression suite re-run on every rule-set version bump and every perception-model update.</li>
+</ul>
+<h2>10. Security &amp; Data Handling</h2>
+<ul>
+<li>Images may contain product/brand identifiers — access-controlled storage, retention policy aligned with compliance audit needs.</li>
+<li>Rule set treated as sensitive configuration (change-controlled, versioned, reviewed).</li>
+</ul>
+<h2>11. Open Technical Questions</h2>
+<ul>
+<li>Source/format of the authoritative rule set at launch (manual JSON authoring vs. ingestion from an existing policy document)?</li>
+<li>Minimum required image angles/count per unit — enforced at capture time or handled as UNCERTAIN downstream?</li>
+<li>Where does human review sit in the flow — pre-ship gate on FAIL/UNCERTAIN, or post-hoc sampling only?</li>
+</ul>
+
+</body></html>

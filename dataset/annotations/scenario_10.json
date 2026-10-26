@@ -1,0 +1,83 @@
+{
+  "scenario_id": "scenario_10",
+  "scenario_name": "Low Image Quality — Severe Motion Blur (Electronics Cable/Component)",
+  "expected_overall_verdict": "UNCERTAIN",
+  "image_file": "scenario_10.jpg",
+  "source": "DALL-E 3 synthetic",
+
+  "vlm_evidence": {
+    "polybag_bbox": {
+      "box_2d": [50, 130, 960, 945],
+      "label": "polybag",
+      "confidence": 0.61
+    },
+    "fnsku_bbox": null,
+    "surface_classification": "flat",
+    "warning_text_ocr": "",
+    "warning_text_confidence": 0.0,
+    "original_barcode_visible": false
+  },
+
+  "image_quality": {
+    "blur_score": 0.04,
+    "brightness_ok": true,
+    "resolution_ok": true,
+    "motion_blur_detected": true,
+    "focus_blur_detected": true,
+    "blur_severity": "SEVERE",
+    "quality_gate_passed": false,
+    "quality_gate_reason": "Laplacian variance score 0.04 is far below minimum threshold of 0.40. Image is too blurry for reliable VLM analysis. All check verdicts must be UNCERTAIN."
+  },
+
+  "check_verdicts": {
+    "polybag_present":        { "verdict": "UNCERTAIN", "reason": "A bag-like shape with blue header section is faintly visible, but image blur prevents confident identification. Confidence: 0.61 — below the 0.80 threshold required for a PASS verdict." },
+    "polybag_sealed":         { "verdict": "UNCERTAIN", "reason": "Cannot determine seal status. Top and bottom edges are completely blurred. No heat-seal or zipper can be identified." },
+    "fnsku_placement":        { "verdict": "UNCERTAIN", "reason": "fnsku_bbox: null. No FNSKU label can be detected or localized in the blurred image. Cannot confirm presence, absence, or placement." },
+    "fnsku_surface":          { "verdict": "UNCERTAIN", "reason": "FNSKU not detectable — surface classification cannot be determined." },
+    "suffocation_warning":    { "verdict": "UNCERTAIN", "reason": "warning_text_ocr: ''. No text of any kind is readable in the image. Cannot confirm presence or absence of suffocation warning." },
+    "suffocation_legibility": { "verdict": "UNCERTAIN", "reason": "Image quality prevents any OCR or text legibility assessment." },
+    "manufacturer_barcode":   { "verdict": "UNCERTAIN", "reason": "No barcode can be decoded or even located in the image. Cannot confirm whether original barcode is covered or exposed." }
+  },
+
+  "annotations": [
+    {
+      "label": "⚠ SEVERE BLUR — Quality Gate FAILED",
+      "color": "#ef4444",
+      "box_2d": [0, 0, 1000, 1000],
+      "note": "Laplacian variance: 0.04. Entire image is blurred beyond reliable analysis. All checks must return UNCERTAIN. Do NOT attempt to infer or guess any check verdict."
+    },
+    {
+      "label": "Possible Polybag (low confidence)",
+      "color": "#f59e0b",
+      "box_2d": [50, 130, 960, 945],
+      "note": "Confidence: 0.61 — below PASS threshold. A bag-like shape with blue header is visible but not confirmable."
+    },
+    {
+      "label": "Possible Cable/Electronic Component (very low confidence)",
+      "color": "#6b7280",
+      "box_2d": [200, 250, 800, 900],
+      "note": "Red wire/cable and black component faintly visible through blur. Product type UNCERTAIN."
+    }
+  ],
+
+  "quality_flags": {
+    "blur_score": 0.04,
+    "brightness_ok": true,
+    "resolution_ok": true,
+    "all_angles_present": false,
+    "notes": "This image should be REJECTED at the quality gate before reaching the VLM. The opencv-python pre-processing step (Laplacian variance blur detection) should catch this and return ALL checks as UNCERTAIN without making an expensive VLM API call. This is the correct system behavior."
+  },
+
+  "training_notes": {
+    "primary_signal": "image_quality_failure_severe_blur",
+    "expected_system_behavior": "QUALITY GATE REJECTION — the image pre-processor should detect blur score 0.04 and short-circuit the pipeline, setting all check verdicts to UNCERTAIN without calling the Gemini API.",
+    "verdict_policy": "NEVER GUESS. When image quality is insufficient, ALL checks must return UNCERTAIN. Returning PASS or FAIL when evidence is unreadable is a worse outcome than UNCERTAIN — it produces false confidence.",
+    "prd_rules_triggered": [
+      "PRD §8.1 — The system must not report PASS or FAIL for any check that cannot be verified from the available image evidence.",
+      "TRD §3.3 — Image quality gating must run BEFORE VLM inference. Blur detection (Laplacian variance < 0.40) must trigger UNCERTAIN for all checks."
+    ],
+    "pipeline_impact": "This scenario validates the opencv quality gate, NOT the VLM. The correct outcome proves the quality gate is working — not that the VLM can somehow read blurry images.",
+    "vrd_model_learning_value": "CRITICAL — This is the only image in the dataset that should short-circuit the entire VLM pipeline. It validates the quality gating layer, confirms the UNCERTAIN verdict policy under poor conditions, and ensures the model never hallucinates evidence from unreadable images.",
+    "contrast_with": "scenario_01 (perfect quality, all PASS) — the maximum quality contrast pair in the dataset"
+  }
+}

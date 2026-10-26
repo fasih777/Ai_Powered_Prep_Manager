@@ -1,0 +1,197 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}</style><style>:root{color-scheme:light dark;--md-bg:#fff;--md-text:rgba(0,0,0,.8);--md-muted:rgba(0,0,0,.6);--md-fill:rgba(0,0,0,.04);--md-fill-strong:rgba(0,0,0,.06);--md-rule:rgba(0,0,0,.1);--md-rule-strong:rgba(0,0,0,.16);--md-link:hsl(210 100% 45%)}@media (prefers-color-scheme:dark){:root:where(:not([data-theme="light"])){--md-bg:#0d0d0d;--md-text:rgba(255,255,255,.85);--md-muted:rgba(255,255,255,.6);--md-fill:rgba(255,255,255,.06);--md-fill-strong:rgba(255,255,255,.09);--md-rule:rgba(255,255,255,.14);--md-rule-strong:rgba(255,255,255,.22);--md-link:hsl(210 100% 72%)}}:root[data-theme="dark"]{color-scheme:dark;--md-bg:#0d0d0d;--md-text:rgba(255,255,255,.85);--md-muted:rgba(255,255,255,.6);--md-fill:rgba(255,255,255,.06);--md-fill-strong:rgba(255,255,255,.09);--md-rule:rgba(255,255,255,.14);--md-rule-strong:rgba(255,255,255,.22);--md-link:hsl(210 100% 72%)}:root[data-theme="light"]{color-scheme:light}@media print{:root,:root[data-theme="dark"]{color-scheme:light;--md-bg:#fff;--md-text:rgba(0,0,0,.8);--md-muted:rgba(0,0,0,.6);--md-fill:rgba(0,0,0,.04);--md-fill-strong:rgba(0,0,0,.06);--md-rule:rgba(0,0,0,.1);--md-rule-strong:rgba(0,0,0,.16);--md-link:hsl(210 100% 45%)}}body{background:var(--md-bg);color:var(--md-text);max-width:720px;margin:0 auto;padding:32px;display:flex;flex-direction:column;gap:10px;font:14px/1.55 -apple-system,BlinkMacSystemFont,'SF Pro','Segoe UI',sans-serif;overflow-wrap:break-word}body>:first-child{margin-top:0}h1,h2,h3,h4,h5,h6{margin:6px 0 0;line-height:1.25;font-weight:600;text-wrap:balance}h1{font-size:1.35em}h2{font-size:1.15em;color:var(--md-muted)}h3,h4,h5,h6{font-size:1em}p,ul,ol,blockquote,table,pre,hr{margin:0}strong{font-weight:600}a{color:var(--md-link);text-decoration:none}a:hover{text-decoration:underline}ul,ol{display:flex;flex-direction:column;gap:6px;padding-left:22px}ul{list-style:disc}ol{list-style:decimal}:is(li,td,th)>*+:is(p,ul,ol,blockquote){margin-top:6px}blockquote{display:flex;flex-direction:column;gap:10px;border-left:2px solid var(--md-rule);padding-left:10px;color:var(--md-muted)}:not(pre)>code{background:var(--md-fill);padding:1px 3px;border-radius:4px;font:.92em 'SF Mono',ui-monospace,Menlo,Consolas,monospace}a>code{background:none;color:inherit}pre{background:var(--md-fill);padding:10px 12px;border-radius:6px;overflow-x:auto;font:12px/1.5 'SF Mono',ui-monospace,Menlo,Consolas,monospace;margin-block:4px}pre code{background:none;padding:0;font:inherit}table{width:100%;border-collapse:separate;border-spacing:2px;font:inherit}th,td{padding:6px 8px;border-radius:3px;text-align:left;vertical-align:top}th{background:var(--md-fill-strong);font-weight:600}td{background:var(--md-fill)}:is(th,td) :not(pre)>code{background:transparent}hr{border:0;border-top:1px solid var(--md-rule-strong);margin-block:10px}img{max-width:100%;height:auto;border-radius:4px}</style>
+</head><body>
+<h1>Roadmap — AI-Powered Prep Manager</h1>
+<p><strong>Derived from:</strong> PRD v1.0, TRD v1.0</p>
+<hr>
+<h2>Guiding Principle</h2>
+<p>Ship in order of <strong>risk reduction</strong>: prove the rule-engine-over-perception architecture and the UNCERTAIN-vs-guess behavior early (highest project risk), then widen check coverage, then integrate into the real workflow, then scale/optimize.</p>
+<hr>
+<h2>Phase 0 — Foundations (Rule Set &amp; Data)</h2>
+<p><strong>Goal:</strong> Nothing else can start until the authoritative rules exist in structured form and test data exists.</p>
+<table>
+<thead>
+<tr>
+<th>Workstream</th>
+<th>Deliverable</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Rule authoring</td>
+<td>Versioned rule set (JSON/YAML) for a first category, covering all 10 check types, each tagged <code>visually_verifiable: true/false</code></td>
+</tr>
+<tr>
+<td>Test data</td>
+<td>Labeled image set covering all 10 PRD test scenarios + category variants, with human ground-truth verdicts</td>
+</tr>
+<tr>
+<td>Schema</td>
+<td><code>PrepReview</code> / <code>check</code> / <code>evidence</code> data model finalized (TRD §3)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Exit criteria:</strong> Rule set v0.1 reviewed by compliance owner; ≥50 labeled test images across pass/fail/uncertain cases.</p>
+<hr>
+<h2>Phase 1 — MVP: Core Pipeline, Narrow Scope</h2>
+<p><strong>Goal:</strong> End-to-end pipeline working for one category and a subset of checks — validate the architecture, not full coverage.</p>
+<table>
+<thead>
+<tr>
+<th>Workstream</th>
+<th>Deliverable</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Perception</td>
+<td>Object/segment detector + OCR module wired as callable tools</td>
+</tr>
+<tr>
+<td>Rule engine</td>
+<td>Deterministic evaluator consuming rule set + evidence → verdict</td>
+</tr>
+<tr>
+<td>Aggregator</td>
+<td>Overall PREP STATUS logic (FAIL &gt; UNCERTAIN &gt; PASS)</td>
+</tr>
+<tr>
+<td>Checks in scope</td>
+<td>Polybag presence, Polybag sealing, Suffocation warning presence, Original barcode covered</td>
+</tr>
+<tr>
+<td>API</td>
+<td><code>POST /v1/prep-review</code> returning structured JSON (TRD §7)</td>
+</tr>
+<tr>
+<td>Reporting</td>
+<td>Human-readable report matching challenge example format</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Exit criteria:</strong> All Phase-0 test images for these 4 checks correctly classified, with <strong>zero false PASS</strong>; UNCERTAIN correctly triggered on the ambiguous test case.</p>
+<hr>
+<h2>Phase 2 — Full Check Coverage</h2>
+<p><strong>Goal:</strong> Extend perception + rules to every check in the PRD.</p>
+<table>
+<thead>
+<tr>
+<th>Workstream</th>
+<th>Deliverable</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Spatial/geometry module</td>
+<td>Surface classification for FNSKU placement (flat vs. seam/curved edge/opening)</td>
+</tr>
+<tr>
+<td>Barcode/label reader</td>
+<td>FNSKU decode + manufacturer barcode detection/coverage check</td>
+</tr>
+<tr>
+<td>OCR extension</td>
+<td>Expiry-date extraction, warning legibility scoring, handling-mark text/icon recognition</td>
+</tr>
+<tr>
+<td>Rule set expansion</td>
+<td>All 10 check types, multi-category support</td>
+</tr>
+<tr>
+<td>Confidence calibration</td>
+<td>Per-check thresholds tuned so UNCERTAIN reflects genuine evidence gaps</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Exit criteria:</strong> Full 10/10 PRD test scenarios pass acceptance criteria across ≥2 product categories.</p>
+<hr>
+<h2>Phase 3 — Reliability, Audit &amp; Human-in-the-Loop</h2>
+<p><strong>Goal:</strong> Make the system trustworthy enough to act on, not just accurate in a lab.</p>
+<table>
+<thead>
+<tr>
+<th>Workstream</th>
+<th>Deliverable</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Audit trail</td>
+<td>Immutable logging of evidence + rule_id + rule_set_version per review</td>
+</tr>
+<tr>
+<td>Override workflow</td>
+<td>Reviewer override endpoint + correction capture for future calibration</td>
+</tr>
+<tr>
+<td>Image quality gate</td>
+<td>Pre-check on blur/exposure/resolution; forces UNCERTAIN below threshold</td>
+</tr>
+<tr>
+<td>Operator UX</td>
+<td>Minimal capture-guidance flow (angles/lighting) to reduce avoidable UNCERTAINs</td>
+</tr>
+<tr>
+<td>Non-visual requirement handling</td>
+<td>Explicit &quot;NOT VERIFIABLE FROM IMAGE&quot; path fully wired and tested</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Exit criteria:</strong> False-PASS rate ≈ 0 on held-out set; every verdict traceable end-to-end in an audit review.</p>
+<hr>
+<h2>Phase 4 — Scale, Observability &amp; Extensibility</h2>
+<p><strong>Goal:</strong> Operate in production across the full category catalog with monitoring and easy rule updates.</p>
+<table>
+<thead>
+<tr>
+<th>Workstream</th>
+<th>Deliverable</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Observability</td>
+<td>Dashboards: verdict distribution, UNCERTAIN rate, confidence drift</td>
+</tr>
+<tr>
+<td>Rule-set ops</td>
+<td>Hot-reload rule updates without redeploying perception layer</td>
+</tr>
+<tr>
+<td>Category rollout</td>
+<td>Rule sets + evidence extractors validated across all target categories</td>
+</tr>
+<tr>
+<td>Performance</td>
+<td>p95 latency &lt; 8s/unit at target throughput</td>
+</tr>
+<tr>
+<td>Regression suite</td>
+<td>Automated re-run on every rule-set or model version bump</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Exit criteria:</strong> Production SLAs met; new category or rule change shippable without a code deploy.</p>
+<hr>
+<h2>Sequencing Summary</h2>
+<pre><code>Phase 0 ── Foundations (rules + data)
+   │
+   ▼
+Phase 1 ── MVP (4 checks, 1 category)  → validates architecture
+   │
+   ▼
+Phase 2 ── Full 10-check coverage      → validates completeness
+   │
+   ▼
+Phase 3 ── Audit, override, UX         → validates trustworthiness
+   │
+   ▼
+Phase 4 ── Scale &amp; observability       → validates production readiness
+</code></pre>
+<h2>Cross-Phase Risks to Track</h2>
+<ul>
+<li><strong>False PASS</strong> is the single most dangerous failure mode — gate every phase exit on this before moving forward.</li>
+<li>Rule-set ownership/update process (from PRD Open Questions) must be settled by end of Phase 0 — it blocks Phase 2/4.</li>
+<li>Decision on where human review sits in the flow (pre-ship gate vs. sampling) should be made before Phase 3 UX work begins.</li>
+</ul>
+
+</body></html>

@@ -1,0 +1,76 @@
+{
+  "scenario_id": "scenario_02",
+  "scenario_name": "Missing Suffocation Warning — Children's Toy (Stuffed Elephant)",
+  "expected_overall_verdict": "FAIL",
+  "image_file": "scenario_02.jpg",
+  "source": "DALL-E 3 synthetic",
+
+  "vlm_evidence": {
+    "polybag_bbox": {
+      "box_2d": [10, 30, 990, 980],
+      "label": "polybag",
+      "confidence": 0.97
+    },
+    "fnsku_bbox": {
+      "box_2d": [560, 235, 710, 775],
+      "label": "fnsku_label",
+      "confidence": 0.98
+    },
+    "surface_classification": "flat",
+    "warning_text_ocr": "",
+    "warning_text_confidence": 0.02,
+    "original_barcode_visible": false
+  },
+
+  "check_verdicts": {
+    "polybag_present":         { "verdict": "PASS",    "reason": "Large transparent polybag clearly enclosing the product." },
+    "polybag_sealed":          { "verdict": "UNCERTAIN","reason": "Top of polybag shows open/unsecured edges — no visible heat-seal or tape closure." },
+    "fnsku_placement":         { "verdict": "PASS",    "reason": "FNSKU label X0035V7K59 affixed flat on the front surface of the polybag." },
+    "fnsku_surface":           { "verdict": "PASS",    "reason": "Surface classification: flat. Label not on seam, curved_edge, or opening." },
+    "suffocation_warning":     { "verdict": "FAIL",    "reason": "CRITICAL: No suffocation warning text found anywhere on the bag. Bag opening is larger than 5 inches — warning is MANDATORY for a children's product." },
+    "suffocation_legibility":  { "verdict": "FAIL",    "reason": "Not applicable — warning text is entirely absent." },
+    "manufacturer_barcode":    { "verdict": "PASS",    "reason": "No original UPC/EAN barcode visible through the polybag." }
+  },
+
+  "annotations": [
+    {
+      "label": "Polybag",
+      "color": "#22c55e",
+      "box_2d": [10, 30, 990, 980],
+      "note": "Large polybag — opening clearly wider than 5 inches"
+    },
+    {
+      "label": "FNSKU Label — X0035V7K59",
+      "color": "#3b82f6",
+      "box_2d": [560, 235, 710, 775],
+      "note": "Flat placement — PASS"
+    },
+    {
+      "label": "⚠ WARNING ABSENT — FAIL",
+      "color": "#ef4444",
+      "box_2d": [800, 30, 980, 980],
+      "note": "No suffocation warning printed anywhere on bottom or front of bag"
+    },
+    {
+      "label": "⚠ Seal Uncertain",
+      "color": "#f59e0b",
+      "box_2d": [10, 30, 80, 980],
+      "note": "Top edge appears open/unsecured — UNCERTAIN verdict"
+    }
+  ],
+
+  "quality_flags": {
+    "blur_score": 0.96,
+    "brightness_ok": true,
+    "resolution_ok": true,
+    "all_angles_present": false,
+    "notes": "Front-facing image only. Clearly shows missing warning. Bag seal state is ambiguous from this angle alone — a top-down or side angle would confirm."
+  },
+
+  "training_notes": {
+    "primary_failure": "suffocation_warning_absent",
+    "secondary_concern": "polybag_seal_uncertain",
+    "vrd_rule_triggered": "PRD §4.2 — Any polybag with an opening ≥ 5 inches used for a children's product MUST carry a printed suffocation warning.",
+    "why_this_matters": "This is a children's soft toy. The DALL-E image correctly shows NO warning text at all — neither on the bottom nor front of the bag. This should trigger an immediate FAIL regardless of other checks passing."
+  }
+}

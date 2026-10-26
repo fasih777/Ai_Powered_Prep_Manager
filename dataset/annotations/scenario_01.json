@@ -1,0 +1,63 @@
+{
+  "scenario_id": "scenario_01",
+  "scenario_name": "Fully Compliant Unit — Electronics (Wireless Mouse)",
+  "expected_overall_verdict": "PASS",
+  "image_file": "scenario_01.jpg",
+  "source": "DALL-E 3 synthetic",
+
+  "vlm_evidence": {
+    "polybag_bbox": {
+      "box_2d": [30, 45, 970, 960],
+      "label": "polybag",
+      "confidence": 0.97
+    },
+    "fnsku_bbox": {
+      "box_2d": [545, 100, 715, 900],
+      "label": "fnsku_label",
+      "confidence": 0.98
+    },
+    "surface_classification": "flat",
+    "warning_text_ocr": "WARNING: To avoid danger of suffocation, keep this plastic bag away from babies and children.",
+    "warning_text_confidence": 0.96,
+    "original_barcode_visible": false
+  },
+
+  "check_verdicts": {
+    "polybag_present":         { "verdict": "PASS", "reason": "Transparent polybag clearly visible enclosing the product." },
+    "polybag_sealed":          { "verdict": "PASS", "reason": "Top of the polybag is heat-sealed with no visible gap." },
+    "fnsku_placement":         { "verdict": "PASS", "reason": "FNSKU label X0037Z1XKZ is affixed flat on the front surface, not crossing any seam or edge." },
+    "fnsku_surface":           { "verdict": "PASS", "reason": "Surface classification: flat. Label is not on seam, curved_edge, or opening." },
+    "suffocation_warning":     { "verdict": "PASS", "reason": "Warning text fully present and legible at the bottom of the bag." },
+    "suffocation_legibility":  { "verdict": "PASS", "reason": "Text is sharp, high contrast, fully readable." },
+    "manufacturer_barcode":    { "verdict": "PASS", "reason": "No original UPC/EAN barcode visible; original barcode fully covered by FNSKU label." }
+  },
+
+  "annotations": [
+    {
+      "label": "Polybag",
+      "color": "#22c55e",
+      "box_2d": [30, 45, 970, 960],
+      "note": "Sealed transparent polybag"
+    },
+    {
+      "label": "FNSKU Label — X0037Z1XKZ",
+      "color": "#3b82f6",
+      "box_2d": [545, 100, 715, 900],
+      "note": "Flat placement, compliant"
+    },
+    {
+      "label": "Suffocation Warning",
+      "color": "#f59e0b",
+      "box_2d": [800, 100, 880, 920],
+      "note": "Legible — PASS"
+    }
+  ],
+
+  "quality_flags": {
+    "blur_score": 0.95,
+    "brightness_ok": true,
+    "resolution_ok": true,
+    "all_angles_present": false,
+    "notes": "Front-facing image only. Sufficient for all required checks."
+  }
+}

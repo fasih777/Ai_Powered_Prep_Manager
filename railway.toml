@@ -1,0 +1,28 @@
+[build]
+builder = "DOCKERFILE"
+dockerfilePath = "Dockerfile"
+
+[build.env]
+REDIS_URL = "${{REDIS_URL}}"
+SUPABASE_URL = "${{SUPABASE_URL}}"
+SUPABASE_KEY = "${{SUPABASE_KEY}}"
+
+[[services]]
+name = "backend"
+dockerfilePath = "Dockerfile"
+dockerContext = "."
+
+[[services.ports]]
+port = 8000
+
+[[services]]
+name = "frontend"
+dockerfilePath = "frontend/Dockerfile"
+dockerContext = "./frontend"
+
+[[services.ports]]
+port = 3000
+
+[[services]]
+name = "redis"
+image = "redis:7-alpine"

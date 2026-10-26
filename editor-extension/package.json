@@ -1,0 +1,36 @@
+{
+  "name": "prep-manager-inline-completions",
+  "displayName": "Prep Manager Inline Completions",
+  "description": "Inline ghost-text completion provider for repetitive component, helper, and test boilerplate.",
+  "version": "0.1.0",
+  "engines": { "vscode": "^1.90.0" },
+  "categories": ["Other"],
+  "activationEvents": ["onStartupFinished"],
+  "main": "./out/extension.js",
+  "contributes": {
+    "configuration": {
+      "title": "Prep Manager",
+      "properties": {
+        "prepManager.completionEndpoint": {
+          "type": "string",
+          "default": "http://127.0.0.1:8787/v1/completions",
+          "description": "Completion service endpoint."
+        },
+        "prepManager.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable inline completions."
+        }
+      }
+    },
+    "commands": [
+      { "command": "prepManager.toggleCompletions", "title": "Prep Manager: Toggle Inline Completions" }
+    ]
+  },
+  "scripts": { "compile": "tsc -p ./", "watch": "tsc -watch -p ./" },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@types/vscode": "^1.90.0",
+    "typescript": "^5.5.0"
+  }
+}

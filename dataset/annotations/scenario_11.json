@@ -1,0 +1,103 @@
+{
+  "scenario_id": "scenario_11",
+  "scenario_name": "Missing Camera Angle — Side-Edge View Only (Electronic Device)",
+  "expected_overall_verdict": "UNCERTAIN",
+  "image_file": "scenario_11.jpg",
+  "source": "DALL-E 3 synthetic",
+
+  "vlm_evidence": {
+    "polybag_bbox": {
+      "box_2d": [10, 290, 990, 970],
+      "label": "polybag_side_edge",
+      "confidence": 0.89
+    },
+    "fnsku_bbox": null,
+    "surface_classification": "flat",
+    "warning_text_ocr": "",
+    "warning_text_confidence": 0.0,
+    "original_barcode_visible": false
+  },
+
+  "image_quality": {
+    "blur_score": 0.88,
+    "brightness_ok": true,
+    "resolution_ok": true,
+    "motion_blur_detected": false,
+    "focus_blur_detected": false,
+    "quality_gate_passed": true,
+    "angle_coverage": "side_only",
+    "required_angles_missing": ["front"],
+    "quality_gate_reason": "Image is technically sharp and well-exposed but captures ONLY the narrow side edge of the polybag. The front face — where all compliance labels (FNSKU, suffocation warning) would be located — is entirely out of frame. All checks dependent on front-face visibility must return UNCERTAIN."
+  },
+
+  "check_verdicts": {
+    "polybag_present":        { "verdict": "UNCERTAIN", "reason": "A polybag side edge is visible (confidence 0.89). A polybag is likely present, but the full extent cannot be confirmed from this narrow side angle alone." },
+    "polybag_sealed":         { "verdict": "UNCERTAIN", "reason": "The top of the polybag shows twisted/folded excess plastic material. Cannot determine whether this is a heat-seal, a twist-tie, or an open/unsecured top from this angle." },
+    "fnsku_placement":        { "verdict": "UNCERTAIN", "reason": "fnsku_bbox: null. The front face of the polybag is entirely out of frame. The FNSKU label, if present, would be on the front face and is completely invisible from this side-edge angle." },
+    "fnsku_surface":          { "verdict": "UNCERTAIN", "reason": "FNSKU not visible — surface classification cannot be determined." },
+    "suffocation_warning":    { "verdict": "UNCERTAIN", "reason": "warning_text_ocr: ''. No text is visible on the narrow side edge of the polybag. The suffocation warning, if printed, would be on the front face which is out of frame." },
+    "suffocation_legibility": { "verdict": "UNCERTAIN", "reason": "Warning visibility cannot be assessed from this angle." },
+    "manufacturer_barcode":   { "verdict": "UNCERTAIN", "reason": "The electronic device inside is partially visible through the polybag edge, but the front of the product — where any barcode would appear — is not visible. Cannot confirm coverage status." }
+  },
+
+  "annotations": [
+    {
+      "label": "⚠ WRONG ANGLE — FRONT FACE HIDDEN",
+      "color": "#f97316",
+      "box_2d": [10, 290, 990, 970],
+      "note": "Camera captured narrow side edge of polybag only. Front face is 90 degrees out of frame. All compliance labels (FNSKU, warning) are on the missing front face."
+    },
+    {
+      "label": "Polybag Side Edge (low confidence)",
+      "color": "#f59e0b",
+      "box_2d": [10, 290, 990, 970],
+      "note": "Only the narrow ~15mm side edge of the polybag is visible. Product shape faintly visible through edge."
+    },
+    {
+      "label": "Electronic Device (partial, very low confidence)",
+      "color": "#6b7280",
+      "box_2d": [150, 310, 850, 850],
+      "note": "A dark electronic device (mouse or similar) is faintly visible through the polybag edge. Product type not confirmable."
+    },
+    {
+      "label": "⚠ Seal Status UNCERTAIN",
+      "color": "#f59e0b",
+      "box_2d": [10, 290, 200, 970],
+      "note": "Top of bag shows twisted/folded plastic material. Cannot determine seal method from side view."
+    },
+    {
+      "label": "MISSING: Front Face",
+      "color": "#ef4444",
+      "box_2d": [0, 0, 1000, 290],
+      "note": "The front face of the polybag is completely out of frame. FNSKU label, suffocation warning, and manufacturer barcode — all compliance-critical elements — are on this invisible face."
+    }
+  ],
+
+  "quality_flags": {
+    "blur_score": 0.88,
+    "brightness_ok": true,
+    "resolution_ok": true,
+    "all_angles_present": false,
+    "angle_detected": "side",
+    "missing_angles": ["front"],
+    "notes": "Image is sharp and high quality — this is NOT a blur failure. The failure is purely geometric: the wrong camera angle was used. This distinguishes this scenario from scenario_10 (blur) — the image quality gate passes here, but a separate angle-detection check must flag the missing front view and return UNCERTAIN."
+  },
+
+  "training_notes": {
+    "primary_signal": "wrong_camera_angle_missing_front_view",
+    "expected_system_behavior": "ANGLE CHECK FAILURE — the system should detect that no front face is visible and return all checks as UNCERTAIN. This should trigger a 'please retake image from front' prompt to the operator.",
+    "verdict_policy": "NEVER GUESS. Even though the image is sharp and clear, the absence of the front face means there is zero evidence for any compliance check. Returning anything other than UNCERTAIN would be hallucination.",
+    "distinction_from_scenario_10": "Scenario 10 fails the QUALITY gate (blur). Scenario 11 PASSES the quality gate (sharp image) but fails the ANGLE gate. These are two separate pre-processing checks in the pipeline.",
+    "prd_rules_triggered": [
+      "PRD §8.2 — The system must verify that the submitted image captures the front face of the polybag before proceeding with compliance evaluation.",
+      "TRD §3.4 — Angle detection must identify side-only, top-only, and back-only views and return UNCERTAIN for all affected checks."
+    ],
+    "pipeline_impact": "This scenario validates the ANGLE DETECTION pre-processing layer — a separate check from blur detection. The system must classify image angle and short-circuit if front face is missing.",
+    "vrd_model_learning_value": "CRITICAL — This is the sharpest image in the dataset but produces all-UNCERTAIN verdicts. Teaches the model that image clarity ≠ evidence sufficiency. A perfectly sharp side-edge photo provides zero compliance evidence.",
+    "contrast_pairs": [
+      "scenario_10 — all UNCERTAIN due to BLUR (quality failure)",
+      "scenario_11 — all UNCERTAIN due to ANGLE (geometry failure)",
+      "scenario_01 — all PASS, front face, perfect quality (the correct reference)"
+    ]
+  }
+}

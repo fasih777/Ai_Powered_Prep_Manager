@@ -1,0 +1,46 @@
+rule_set_id: prep-fragile-v1
+version: "2026.09.1"
+category: fragile_glass
+description: Authoritative packaging and labeling rules for fragile and glass items
+effective_date: "2026-09-01T00:00:00Z"
+checks:
+  - check_id: protective_cushioning
+    name: Protective bubble wrap or box
+    description: Unit must be protected with minimum 3-inch bubble wrap or corrugated box
+    visually_verifiable: true
+    evidence_key: protective_cushioning
+    pass_values: [bubble_wrapped, boxed, cushioned]
+    fail_values: [bare, missing]
+    min_confidence: 0.85
+  - check_id: fragile_handling_marks
+    name: Fragile handling marks
+    description: Package must prominently display Fragile or Handle with Care warning labels
+    visually_verifiable: true
+    evidence_key: fragile_labels
+    pass_values: [present]
+    fail_values: [missing]
+    min_confidence: 0.85
+  - check_id: fnsku_placement
+    name: FNSKU label placement
+    description: FNSKU label must be affixed on the outermost protective layer
+    visually_verifiable: true
+    evidence_key: fnsku_placement
+    pass_values: [flat, proper]
+    fail_values: [missing, misplaced]
+    min_confidence: 0.80
+  - check_id: manufacturer_barcode_covered
+    name: Original manufacturer barcode covered
+    description: Inner item barcode must not be visible or scannable through packaging
+    visually_verifiable: true
+    evidence_key: manufacturer_barcode
+    pass_values: [covered]
+    fail_values: [visible, uncovered, partially_visible]
+    min_confidence: 0.85
+  - check_id: drop_test_3ft_survival
+    name: 3-foot drop test survival standard
+    description: Unit must withstand standard 3-foot drop onto concrete without shattering (physical test)
+    visually_verifiable: false
+    evidence_key: drop_test_survival
+    pass_values: []
+    fail_values: []
+    min_confidence: 1.0

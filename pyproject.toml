@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "prep-manager-rule-engine"
+version = "0.1.0"
+description = "Deterministic rule evaluation for AI-powered prep reviews"
+requires-python = ">=3.11"
+dependencies = ["PyYAML>=6.0"]
+
+[project.optional-dependencies]
+test = ["pytest>=8.0"]
+vision = ["numpy>=1.26", "opencv-python-headless>=4.9"]
+barcodes = ["numpy>=1.26", "opencv-python-headless>=4.9", "zxing-cpp>=2.2", "pyzbar>=0.1.9"]
+queue = ["redis>=5.0", "rq>=2.0"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]

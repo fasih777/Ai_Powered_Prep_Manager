@@ -1,0 +1,70 @@
+rule_set_id: prep-liquids-v1
+version: "2026.09.1"
+category: liquids_consumables
+description: Authoritative packaging and labeling rules for liquids, gels, and consumable goods
+effective_date: "2026-09-01T00:00:00Z"
+checks:
+  - check_id: double_seal_or_polybag
+    name: Double seal or polybag
+    description: Liquids must have double seals or be placed in a transparent leak-proof bag
+    visually_verifiable: true
+    evidence_key: double_seal_polybag
+    pass_values: [present, compliant]
+    fail_values: [missing, non_compliant]
+    min_confidence: 0.85
+  - check_id: polybag_sealing
+    name: Polybag sealing
+    description: Liquid polybag must be completely sealed to prevent leaks
+    visually_verifiable: true
+    evidence_key: polybag_seal
+    pass_values: [sealed, heat_sealed, taped]
+    fail_values: [open, unsealed]
+    min_confidence: 0.85
+  - check_id: suffocation_warning_presence
+    name: Suffocation warning presence
+    description: Printed suffocation warning is mandatory on polybags with opening >= 5 inches
+    visually_verifiable: true
+    evidence_key: suffocation_warning
+    pass_values: [present]
+    fail_values: [missing]
+    min_confidence: 0.85
+  - check_id: expiry_date_visibility
+    name: Expiry-date visibility
+    description: Consumables must display a clear, readable expiration date in MM-DD-YYYY or YYYY-MM-DD
+    visually_verifiable: true
+    evidence_key: expiry_date
+    pass_values: [visible, legible]
+    fail_values: [covered, missing, illegible]
+    min_confidence: 0.85
+  - check_id: liquid_orientation_marks
+    name: Liquid orientation marks (This Side Up)
+    description: Arrows indicating orientation must be present on bottles and prep bag
+    visually_verifiable: true
+    evidence_key: orientation_arrows
+    pass_values: [present]
+    fail_values: [missing]
+    min_confidence: 0.80
+  - check_id: manufacturer_barcode_covered
+    name: Original manufacturer barcode covered
+    description: Existing container barcode must be covered by FNSKU label
+    visually_verifiable: true
+    evidence_key: manufacturer_barcode
+    pass_values: [covered]
+    fail_values: [visible, uncovered, partially_visible]
+    min_confidence: 0.85
+  - check_id: fnsku_surface
+    name: FNSKU appropriate surface
+    description: FNSKU must be on a flat vertical surface, not across bottle curves or cap
+    visually_verifiable: true
+    evidence_key: fnsku_surface
+    pass_values: [flat]
+    fail_values: [curved_edge, cap, seam]
+    min_confidence: 0.80
+  - check_id: pressure_seal_integrity
+    name: Cap pressure seal integrity
+    description: Internal induction seal must be intact (non-visual without breaking package)
+    visually_verifiable: false
+    evidence_key: pressure_seal_integrity
+    pass_values: []
+    fail_values: []
+    min_confidence: 1.0

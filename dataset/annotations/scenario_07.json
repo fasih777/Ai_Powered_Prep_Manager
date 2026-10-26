@@ -1,0 +1,98 @@
+{
+  "scenario_id": "scenario_07",
+  "scenario_name": "Expiry Date Covered by Opaque Sticker — NatureWise Vitamin D3 Supplement",
+  "expected_overall_verdict": "FAIL",
+  "image_file": "scenario_07.jpg",
+  "source": "DALL-E 3 synthetic",
+
+  "vlm_evidence": {
+    "polybag_bbox": {
+      "box_2d": [5, 30, 990, 970],
+      "label": "polybag",
+      "confidence": 0.97
+    },
+    "fnsku_bbox": {
+      "box_2d": [720, 30, 895, 390],
+      "label": "fnsku_label",
+      "confidence": 0.97
+    },
+    "surface_classification": "flat",
+    "warning_text_ocr": "WARNING: To avoid danger of suffocation, keep this plastic bag away from babies and children. Do not use this bag in cribs, beds, carriages or playpens. This bag is not a toy.",
+    "warning_text_confidence": 0.99,
+    "original_barcode_visible": false
+  },
+
+  "check_verdicts": {
+    "polybag_present":        { "verdict": "PASS",      "reason": "Transparent polybag clearly present enclosing the supplement bottle." },
+    "polybag_sealed":         { "verdict": "PASS",      "reason": "Polybag appears to be a zip-lock closure style. The top zipper closure appears sealed/closed." },
+    "fnsku_placement":        { "verdict": "PASS",      "reason": "FNSKU label X0042V9J8P is placed on the flat lower-left surface of the polybag, not on a seam or edge." },
+    "fnsku_surface":          { "verdict": "PASS",      "reason": "surface_classification: flat. Label is smooth and correctly positioned on the front polybag face." },
+    "suffocation_warning":    { "verdict": "PASS",      "reason": "Full suffocation warning visible in a bordered box at the top of the polybag." },
+    "suffocation_legibility": { "verdict": "PASS",      "reason": "Warning text is bold, sharp, in a bordered box, and fully legible." },
+    "manufacturer_barcode":   { "verdict": "UNCERTAIN", "reason": "No UPC/EAN barcode visible on the front label. Barcode may be on the back of the bottle — cannot confirm coverage status from this angle." },
+    "expiry_date_visible":    { "verdict": "FAIL",      "reason": "CRITICAL: A blank white opaque sticker has been applied to the bottom-right section of the NatureWise bottle label. This sticker is covering what would be the expiry/best-by date area on a dietary supplement. Expiry date must NOT be obscured — it is required regulatory information for consumable products." }
+  },
+
+  "annotations": [
+    {
+      "label": "Polybag",
+      "color": "#22c55e",
+      "box_2d": [5, 30, 990, 970],
+      "note": "Transparent zip-lock polybag"
+    },
+    {
+      "label": "✅ Suffocation Warning — PASS",
+      "color": "#22c55e",
+      "box_2d": [5, 200, 175, 790],
+      "note": "Bordered box warning: 'WARNING: To avoid danger of suffocation, keep this plastic bag away from babies and children. Do not use this bag in cribs, beds, carriages or playpens. This bag is not a toy.'"
+    },
+    {
+      "label": "✅ FNSKU Label — X0042V9J8P — PASS",
+      "color": "#3b82f6",
+      "box_2d": [720, 30, 895, 390],
+      "note": "Flat placement on lower-left polybag surface. surface_classification: flat. Compliant."
+    },
+    {
+      "label": "NatureWise Vitamin D3 Bottle",
+      "color": "#6b7280",
+      "box_2d": [175, 115, 870, 970],
+      "note": "Product: NatureWise Vitamin D3 125mcg (5000 IU), 120 Softgels, Dietary Supplement. Visible through transparent polybag."
+    },
+    {
+      "label": "❌ EXPIRY DATE COVERED — FAIL",
+      "color": "#ef4444",
+      "box_2d": [595, 600, 870, 855],
+      "note": "Blank white opaque sticker applied to the bottom-right of the bottle label. Covers the expiry/best-by date. Dietary supplement expiry dates are mandatory regulatory information and must not be obscured."
+    }
+  ],
+
+  "quality_flags": {
+    "blur_score": 0.96,
+    "brightness_ok": true,
+    "resolution_ok": true,
+    "all_angles_present": false,
+    "notes": "Front-facing image only. The white sticker covering the expiry date is clearly visible on the bottle label. The transparent polybag allows full inspection of the product label. Excellent training image for expiry-date occlusion detection."
+  },
+
+  "product_context": {
+    "product_type": "Dietary Supplement",
+    "brand": "NatureWise",
+    "product_name": "Vitamin D3",
+    "quantity": "120 Softgels",
+    "category": "liquids_consumables",
+    "regulatory_note": "Dietary supplements are FDA-regulated. Expiry date is mandatory on the label. Any sticker or label covering the expiry date renders the product non-compliant for inbound regardless of other prep checks."
+  },
+
+  "training_notes": {
+    "primary_failure": "expiry_date_covered_by_sticker",
+    "failures_count": 1,
+    "passes_count": 5,
+    "uncertain_count": 1,
+    "prd_rules_triggered": [
+      "PRD §6.3 — For consumable/supplement products, expiry date must remain visible. Any label or sticker that obscures the expiry date is a mandatory FAIL.",
+      "PRD §5.2 — FNSKU label must not be placed over expiry dates, lot numbers, or other mandatory regulatory markings."
+    ],
+    "vrd_model_learning_value": "HIGH — This is the only consumable/supplement scenario in the dataset. The model must learn to: (1) detect that the product category is a dietary supplement, (2) locate the expiry date region on the bottle label, (3) detect that an opaque sticker covers it. This is different from all other scenarios — the failure is ON the product inside the bag, not on the polybag itself.",
+    "unique_learning_signal": "Unlike all other scenarios where failures are on the POLYBAG surface, this scenario's failure is on the PRODUCT LABEL inside the bag. Tests whether the VLM can inspect through the transparent polybag to verify inner product compliance."
+  }
+}

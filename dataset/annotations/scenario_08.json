@@ -1,0 +1,106 @@
+{
+  "scenario_id": "scenario_08",
+  "scenario_name": "Fragile Glass Item With No Cushioning — Glass Jar in Bare Polybag",
+  "expected_overall_verdict": "FAIL",
+  "image_file": "scenario_08.jpg",
+  "source": "DALL-E 3 synthetic",
+
+  "vlm_evidence": {
+    "polybag_bbox": {
+      "box_2d": [10, 40, 990, 980],
+      "label": "polybag",
+      "confidence": 0.96
+    },
+    "fnsku_bbox": {
+      "box_2d": [360, 155, 575, 735],
+      "label": "fnsku_label",
+      "confidence": 0.93
+    },
+    "surface_classification": "curved_edge",
+    "warning_text_ocr": "WARNING: To avoid danger of suffocation, keep this plastic bag away from babies and children. Do not use this bag in cribs, beds, carriages, or playpens. This bag is not a toy.",
+    "warning_text_confidence": 0.97,
+    "original_barcode_visible": false
+  },
+
+  "check_verdicts": {
+    "polybag_present":        { "verdict": "PASS",      "reason": "Transparent polybag is present enclosing the glass jar." },
+    "polybag_sealed":         { "verdict": "FAIL",      "reason": "Top of polybag edges appear unsecured and loose — no visible heat-seal or tape closure. Bag opening is not closed." },
+    "fnsku_placement":        { "verdict": "FAIL",      "reason": "FNSKU label X003ABCDE1 is applied directly to the curved surface of the glass jar inside the polybag — not to the flat exterior surface of the polybag itself. surface_classification: curved_edge." },
+    "fnsku_surface":          { "verdict": "FAIL",      "reason": "surface_classification: curved_edge. The label is on the cylindrical glass jar, not on a flat polybag face. Barcode deformation risk on curved glass." },
+    "suffocation_warning":    { "verdict": "UNCERTAIN", "reason": "Warning text is visible via a sticker label on the glass jar (inside the polybag), not printed on the polybag itself. The warning IS readable through the clear polybag, but its placement on the product rather than the polybag surface is a non-standard prep. Requires QA human review." },
+    "suffocation_legibility": { "verdict": "PASS",      "reason": "Warning text is sharp, fully legible, in a bordered box with hazard triangle icon. Text is completely readable through the transparent polybag." },
+    "cushioning_present":     { "verdict": "FAIL",      "reason": "CRITICAL: Glass jar is a fragile item. No bubble wrap, foam padding, or any cushioning material is present inside the polybag. The jar is loose and in direct contact with the bare polybag surface — breakage risk during transit is very high." },
+    "manufacturer_barcode":   { "verdict": "PASS",      "reason": "No original UPC/EAN barcode visible. The glass jar appears to be a plain unlabeled container with only the applied FNSKU label." }
+  },
+
+  "annotations": [
+    {
+      "label": "Polybag",
+      "color": "#22c55e",
+      "box_2d": [10, 40, 990, 980],
+      "note": "Transparent polybag — PRESENT but issues with seal and FNSKU placement"
+    },
+    {
+      "label": "⚠ OPEN SEAL — FAIL",
+      "color": "#ef4444",
+      "box_2d": [10, 40, 85, 980],
+      "note": "Top polybag edges are loose and unsecured — not heat-sealed or taped"
+    },
+    {
+      "label": "Glass Jar (Fragile Item)",
+      "color": "#a855f7",
+      "box_2d": [85, 155, 980, 970],
+      "note": "Clear glass jar with silver metal lid — FRAGILE category. Requires cushioning for transit."
+    },
+    {
+      "label": "❌ NO CUSHIONING — FAIL (Critical)",
+      "color": "#ef4444",
+      "box_2d": [10, 40, 85, 980],
+      "note": "ZERO bubble wrap, foam, or padding inside polybag. Glass item is bare and in direct contact with polybag walls. High breakage risk."
+    },
+    {
+      "label": "⚠ FNSKU on CURVED GLASS — FAIL",
+      "color": "#f97316",
+      "box_2d": [360, 155, 575, 735],
+      "note": "FNSKU label X003ABCDE1 applied to cylindrical glass jar surface. surface_classification: curved_edge. Should be on flat polybag exterior, not on product."
+    },
+    {
+      "label": "⚠ Warning on Jar Sticker — UNCERTAIN",
+      "color": "#f59e0b",
+      "box_2d": [575, 155, 850, 735],
+      "note": "Suffocation warning is on a sticker applied to the glass jar INSIDE the bag, not printed on the polybag itself. Legible through clear polybag. Non-standard placement — requires human QA review."
+    }
+  ],
+
+  "quality_flags": {
+    "blur_score": 0.95,
+    "brightness_ok": true,
+    "resolution_ok": true,
+    "all_angles_present": false,
+    "notes": "Front-facing image. The transparent nature of both the polybag AND the glass jar makes this a visually complex but high-value training image. The absence of cushioning is unambiguous. FNSKU placement on curved glass is clearly visible."
+  },
+
+  "product_context": {
+    "product_type": "Fragile Glass Container",
+    "category": "fragile_glass",
+    "fragile": true,
+    "cushioning_required": true,
+    "cushioning_types_accepted": ["bubble_wrap", "foam_wrap", "air_pillows"],
+    "regulatory_note": "All fragile/glass items MUST be individually wrapped in bubble wrap or foam before being placed in a polybag. A bare glass item in a polybag is an automatic FAIL."
+  },
+
+  "training_notes": {
+    "primary_failure": "cushioning_absent_for_fragile_item",
+    "secondary_failures": ["polybag_unsealed", "fnsku_on_curved_surface"],
+    "tertiary_concern": "warning_on_product_not_polybag",
+    "failures_count": 3,
+    "uncertain_count": 1,
+    "prd_rules_triggered": [
+      "PRD §7.1 — Fragile/glass items must be individually cushioned with bubble wrap or foam before polybag insertion.",
+      "PRD §3.1 — Polybag must be sealed before inbound.",
+      "PRD §5.1 — FNSKU label must be applied to the flat exterior surface of the polybag, not to curved product surfaces."
+    ],
+    "vrd_model_learning_value": "VERY HIGH — First and only fragile_glass category image in the dataset. Introduces an entirely new check: detecting the PRESENCE or ABSENCE of cushioning material inside the polybag. The model must learn to distinguish between a cushioned product (bubble wrap visible) and an un-cushioned bare product. Also teaches FNSKU on curved glass surface as a distinct failure mode.",
+    "unique_learning_signal": "The ABSENT cushioning detection task is a pure object-absence task — the model must correctly interpret the empty space around the glass jar as a compliance failure. This is the hardest class of detection for VLMs."
+  }
+}

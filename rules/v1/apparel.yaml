@@ -1,0 +1,78 @@
+rule_set_id: prep-apparel-v1
+version: "2026.09.1"
+category: apparel
+description: Authoritative packaging and labeling rules for apparel and textiles
+effective_date: "2026-09-01T00:00:00Z"
+checks:
+  - check_id: polybag_presence
+    name: Polybag presence
+    description: Garments must be contained in a clear protective polybag
+    visually_verifiable: true
+    evidence_key: polybag_presence
+    pass_values: [present]
+    fail_values: [missing]
+    min_confidence: 0.80
+  - check_id: polybag_sealing
+    name: Polybag sealing
+    description: Polybag must be securely closed with self-adhesive strip or heat seal
+    visually_verifiable: true
+    evidence_key: polybag_seal
+    pass_values: [sealed, heat_sealed, taped, adhesive_sealed]
+    fail_values: [open, unsealed]
+    min_confidence: 0.80
+  - check_id: suffocation_warning_presence
+    name: Suffocation warning presence
+    description: Printed suffocation warning is required for polybag openings >= 5 inches
+    visually_verifiable: true
+    evidence_key: suffocation_warning
+    pass_values: [present]
+    fail_values: [missing]
+    min_confidence: 0.85
+  - check_id: warning_legibility
+    name: Warning visibility and legibility
+    description: Suffocation warning text must be legible and not obscured by folds
+    visually_verifiable: true
+    evidence_key: suffocation_warning_legibility
+    pass_values: [legible, clear]
+    fail_values: [illegible, obscured]
+    min_confidence: 0.85
+  - check_id: fnsku_placement
+    name: FNSKU label placement
+    description: FNSKU barcode must be affixed on the outside of the polybag
+    visually_verifiable: true
+    evidence_key: fnsku_placement
+    pass_values: [flat, proper]
+    fail_values: [missing, misplaced]
+    min_confidence: 0.80
+  - check_id: fnsku_surface
+    name: FNSKU appropriate surface
+    description: Label must be placed on a flat portion of the folded garment
+    visually_verifiable: true
+    evidence_key: fnsku_surface
+    pass_values: [flat]
+    fail_values: [seam, curved_edge, opening]
+    min_confidence: 0.80
+  - check_id: manufacturer_barcode_covered
+    name: Original manufacturer barcode covered
+    description: Original garment hangtag barcode must not show through or scan
+    visually_verifiable: true
+    evidence_key: manufacturer_barcode
+    pass_values: [covered]
+    fail_values: [visible, uncovered, partially_visible]
+    min_confidence: 0.85
+  - check_id: size_label_visibility
+    name: Size label visibility
+    description: Garment size indicator must be clearly visible through the polybag
+    visually_verifiable: true
+    evidence_key: size_label
+    pass_values: [visible, legible]
+    fail_values: [hidden, missing]
+    min_confidence: 0.80
+  - check_id: bag_material_thickness
+    name: Polybag material thickness (1.5 mil)
+    description: Polybag must meet minimum 1.5 mil thickness standard (non-visual specification)
+    visually_verifiable: false
+    evidence_key: bag_material_thickness
+    pass_values: []
+    fail_values: []
+    min_confidence: 1.0

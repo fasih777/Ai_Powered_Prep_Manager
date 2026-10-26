@@ -1,0 +1,90 @@
+{
+  "scenario_id": "scenario_05",
+  "scenario_name": "FNSKU Label Placed on Bottom Heat-Seal Seam — Natural Linen Apparel",
+  "expected_overall_verdict": "FAIL",
+  "image_file": "scenario_05.jpg",
+  "source": "DALL-E 3 synthetic",
+
+  "vlm_evidence": {
+    "polybag_bbox": {
+      "box_2d": [5, 30, 990, 975],
+      "label": "polybag",
+      "confidence": 0.97
+    },
+    "fnsku_bbox": {
+      "box_2d": [680, 80, 950, 920],
+      "label": "fnsku_label",
+      "confidence": 0.98
+    },
+    "surface_classification": "seam",
+    "warning_text_ocr": "WARNING: To avoid danger of suffocation, keep this plastic bag away from babies and children. Do not use this bag in cribs, beds, carriages, or playpens. This bag is not a toy.",
+    "warning_text_confidence": 0.99,
+    "original_barcode_visible": false
+  },
+
+  "check_verdicts": {
+    "polybag_present":        { "verdict": "PASS", "reason": "Transparent polybag clearly present enclosing the natural linen apparel item." },
+    "polybag_sealed":         { "verdict": "PASS", "reason": "Bottom heat-seal seam is visible as a textured/ribbed strip at the bottom edge of the bag. Bag is securely sealed." },
+    "fnsku_placement":        { "verdict": "FAIL", "reason": "CRITICAL: FNSKU label X0037K1ABC is placed directly at the bottom heat-seal seam of the polybag. The label edges are visibly wrinkled where the label transitions over the seam ridge. Placement on a seam risks barcode deformation and failed scanning." },
+    "fnsku_surface":          { "verdict": "FAIL", "reason": "surface_classification: seam. Label is affixed at/across the bottom seam fold rather than on a flat polybag surface." },
+    "suffocation_warning":    { "verdict": "PASS", "reason": "Full extended suffocation warning clearly printed in the upper half of the polybag, overlaid on the natural fabric pattern." },
+    "suffocation_legibility": { "verdict": "PASS", "reason": "Warning text is bold, sharp, and fully legible. Decorative leaf illustration present but does not obstruct any warning text." },
+    "manufacturer_barcode":   { "verdict": "PASS", "reason": "No original UPC/EAN barcode visible. Natural linen fabric item has no external barcode showing through the transparent polybag." }
+  },
+
+  "annotations": [
+    {
+      "label": "Polybag",
+      "color": "#22c55e",
+      "box_2d": [5, 30, 990, 975],
+      "note": "Transparent polybag with bottom heat-seal"
+    },
+    {
+      "label": "✅ Suffocation Warning — PASS",
+      "color": "#22c55e",
+      "box_2d": [5, 30, 640, 975],
+      "note": "Full warning OCR: 'WARNING: To avoid danger of suffocation, keep this plastic bag away from babies and children. Do not use this bag in cribs, beds, carriages, or playpens. This bag is not a toy.' — Legible, high contrast"
+    },
+    {
+      "label": "Decorative Leaf Illustration",
+      "color": "#86efac",
+      "box_2d": [5, 250, 270, 770],
+      "note": "Non-compliance element — decorative print on polybag. Does not obstruct warning text. Informational only."
+    },
+    {
+      "label": "⚠ FNSKU on BOTTOM SEAM — FAIL",
+      "color": "#ef4444",
+      "box_2d": [680, 80, 950, 920],
+      "note": "FNSKU X0037K1ABC label overlaps the bottom heat-seal seam ridge. Label edges visibly wrinkle at seam transition. surface_classification: seam. Barcode legibility risk."
+    },
+    {
+      "label": "Bottom Heat-Seal Seam",
+      "color": "#f97316",
+      "box_2d": [900, 30, 990, 975],
+      "note": "Textured/ribbed strip at bottom = heat-seal seam. FNSKU label must NOT cross this boundary."
+    }
+  ],
+
+  "quality_flags": {
+    "blur_score": 0.95,
+    "brightness_ok": true,
+    "resolution_ok": true,
+    "all_angles_present": false,
+    "notes": "Close-up front/bottom view. The bottom seam texture is clearly visible. FNSKU label wrinkling at seam edge is well-captured. Warning text is crisp and large — excellent OCR training sample. Decorative bag print is a valuable real-world training variation."
+  },
+
+  "training_notes": {
+    "primary_failure": "fnsku_on_seam",
+    "failures_count": 1,
+    "passes_count": 5,
+    "prd_rules_triggered": [
+      "PRD §5.1 — FNSKU label must be applied to a flat, smooth polybag surface. Placement across a heat-seal seam, fold, or ridge is prohibited."
+    ],
+    "contrast_pairs": [
+      "scenario_01 — fully compliant (FNSKU flat, warning present)",
+      "scenario_04b — also FNSKU on seam but different product/bag style"
+    ],
+    "vrd_model_learning_value": "HIGH — This is the clearest seam-placement failure in the dataset. The bottom heat-seal seam texture is distinctly visible, and the label wrinkling at its edges provides an unambiguous visual signal. The decorative leaf print adds realistic visual noise for model robustness training.",
+    "dataset_diversity_note": "Scenario 04b also had FNSKU on seam but was a black opaque bag. This scenario uses a transparent bag with a visible natural-colored fabric item and a decorative print — significantly different visual context. Both are valuable for diversity."
+  }
+}

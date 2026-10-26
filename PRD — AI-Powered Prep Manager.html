@@ -1,0 +1,193 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}</style><style>:root{color-scheme:light dark;--md-bg:#fff;--md-text:rgba(0,0,0,.8);--md-muted:rgba(0,0,0,.6);--md-fill:rgba(0,0,0,.04);--md-fill-strong:rgba(0,0,0,.06);--md-rule:rgba(0,0,0,.1);--md-rule-strong:rgba(0,0,0,.16);--md-link:hsl(210 100% 45%)}@media (prefers-color-scheme:dark){:root:where(:not([data-theme="light"])){--md-bg:#0d0d0d;--md-text:rgba(255,255,255,.85);--md-muted:rgba(255,255,255,.6);--md-fill:rgba(255,255,255,.06);--md-fill-strong:rgba(255,255,255,.09);--md-rule:rgba(255,255,255,.14);--md-rule-strong:rgba(255,255,255,.22);--md-link:hsl(210 100% 72%)}}:root[data-theme="dark"]{color-scheme:dark;--md-bg:#0d0d0d;--md-text:rgba(255,255,255,.85);--md-muted:rgba(255,255,255,.6);--md-fill:rgba(255,255,255,.06);--md-fill-strong:rgba(255,255,255,.09);--md-rule:rgba(255,255,255,.14);--md-rule-strong:rgba(255,255,255,.22);--md-link:hsl(210 100% 72%)}:root[data-theme="light"]{color-scheme:light}@media print{:root,:root[data-theme="dark"]{color-scheme:light;--md-bg:#fff;--md-text:rgba(0,0,0,.8);--md-muted:rgba(0,0,0,.6);--md-fill:rgba(0,0,0,.04);--md-fill-strong:rgba(0,0,0,.06);--md-rule:rgba(0,0,0,.1);--md-rule-strong:rgba(0,0,0,.16);--md-link:hsl(210 100% 45%)}}body{background:var(--md-bg);color:var(--md-text);max-width:720px;margin:0 auto;padding:32px;display:flex;flex-direction:column;gap:10px;font:14px/1.55 -apple-system,BlinkMacSystemFont,'SF Pro','Segoe UI',sans-serif;overflow-wrap:break-word}body>:first-child{margin-top:0}h1,h2,h3,h4,h5,h6{margin:6px 0 0;line-height:1.25;font-weight:600;text-wrap:balance}h1{font-size:1.35em}h2{font-size:1.15em;color:var(--md-muted)}h3,h4,h5,h6{font-size:1em}p,ul,ol,blockquote,table,pre,hr{margin:0}strong{font-weight:600}a{color:var(--md-link);text-decoration:none}a:hover{text-decoration:underline}ul,ol{display:flex;flex-direction:column;gap:6px;padding-left:22px}ul{list-style:disc}ol{list-style:decimal}:is(li,td,th)>*+:is(p,ul,ol,blockquote){margin-top:6px}blockquote{display:flex;flex-direction:column;gap:10px;border-left:2px solid var(--md-rule);padding-left:10px;color:var(--md-muted)}:not(pre)>code{background:var(--md-fill);padding:1px 3px;border-radius:4px;font:.92em 'SF Mono',ui-monospace,Menlo,Consolas,monospace}a>code{background:none;color:inherit}pre{background:var(--md-fill);padding:10px 12px;border-radius:6px;overflow-x:auto;font:12px/1.5 'SF Mono',ui-monospace,Menlo,Consolas,monospace;margin-block:4px}pre code{background:none;padding:0;font:inherit}table{width:100%;border-collapse:separate;border-spacing:2px;font:inherit}th,td{padding:6px 8px;border-radius:3px;text-align:left;vertical-align:top}th{background:var(--md-fill-strong);font-weight:600}td{background:var(--md-fill)}:is(th,td) :not(pre)>code{background:transparent}hr{border:0;border-top:1px solid var(--md-rule-strong);margin-block:10px}img{max-width:100%;height:auto;border-radius:4px}</style>
+</head><body>
+<h1>Product Requirements Document (PRD)</h1>
+<h2>AI-Powered Prep Manager</h2>
+<p><strong>Version:</strong> 1.0 | <strong>Status:</strong> Draft | <strong>Owner:</strong> Project Planning</p>
+<hr>
+<h2>1. Problem Statement</h2>
+<p>Products prepared for inbound shipment must meet packaging and labelling requirements (polybagging, warning labels, FNSKU placement, barcode coverage, expiry visibility, handling marks). Prep errors are often invisible until weeks later, when they surface as compliance issues and fees. A work order proves <em>intent</em>, not <em>execution</em> — there is no reliable way today to confirm a unit was actually prepared correctly at the time of processing.</p>
+<h2>2. Goal</h2>
+<p>Build an AI agent that reviews photographs of a prepared unit against authoritative prep requirements and returns a per-check verdict (Pass/Fail/Uncertain) with evidence and an overall PREP STATUS, catching errors <strong>before</strong> the unit ships instead of weeks later.</p>
+<h2>3. Users &amp; Use Cases</h2>
+<table>
+<thead>
+<tr>
+<th>User</th>
+<th>Use Case</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Prep station operator</td>
+<td>Takes photos post-prep, gets instant pass/fail feedback before moving the unit on</td>
+</tr>
+<tr>
+<td>QA / compliance reviewer</td>
+<td>Audits a sample of prepped units, reviews AI-flagged failures and uncertain cases</td>
+</tr>
+<tr>
+<td>Ops manager</td>
+<td>Monitors prep-quality trends, error types, and re-work rates</td>
+</tr>
+</tbody>
+</table>
+<h2>4. Scope</h2>
+<h3>In Scope — Visual Checks</h3>
+<ol>
+<li>Polybag presence</li>
+<li>Polybag sealing</li>
+<li>Suffocation warning presence</li>
+<li>Warning visibility &amp; legibility</li>
+<li>FNSKU label placement</li>
+<li>FNSKU placed on an appropriate surface (not on a seam/curved edge/opening)</li>
+<li>Original manufacturer barcode covered</li>
+<li>Expiry-date visibility</li>
+<li>Required handling marks (fragile, liquid, this-side-up, etc., where applicable to category)</li>
+<li>Other category-specific visual prep requirements defined in the reference rule set</li>
+</ol>
+<h3>Explicitly Out of Scope</h3>
+<ul>
+<li>Any requirement not visually verifiable (e.g., poly bag material thickness/mil rating, adhesive strength, weight/dimension accuracy) — the agent must declare these <strong>Uncertain / Not Verifiable</strong>, never guess.</li>
+<li>Physical remediation/re-prep workflow (routing a failed unit) — v1 only reports status; workflow integration is a future phase.</li>
+<li>Non-prep quality issues (product damage, wrong item) unless they coincide with a listed check.</li>
+</ul>
+<h2>5. Inputs</h2>
+<ul>
+<li>Product photograph(s) — multiple angles where available</li>
+<li>Packaging photograph(s)</li>
+<li>Product/category metadata (category drives which checks/marks apply)</li>
+<li>Label &amp; barcode crops/zoom images (if separately supplied)</li>
+<li>Prep requirements reference (authoritative rule source — see §7)</li>
+<li>Sample preparation instructions / work order (context only, not proof of execution)</li>
+</ul>
+<h2>6. Output Format</h2>
+<p>For each applicable check:</p>
+<pre><code>&lt;Check Name&gt;: PASS | FAIL | UNCERTAIN
+Reason: &lt;short explanation when FAIL/UNCERTAIN&gt;
+Evidence: &lt;what in the image supports this — region/label text/observation&gt;
+</code></pre>
+<p>Then:</p>
+<pre><code>PREP STATUS: PASS | FAIL | UNCERTAIN
+</code></pre>
+<p>Rules for overall status:</p>
+<ul>
+<li><strong>FAIL</strong> if any single applicable check is FAIL.</li>
+<li><strong>UNCERTAIN</strong> if no check FAILs but one or more required checks could not be conclusively verified from the provided evidence.</li>
+<li><strong>PASS</strong> only if every applicable check is PASS.</li>
+</ul>
+<h2>7. Reference Requirements (Authoritative Rule Source)</h2>
+<p>The agent must <strong>never invent compliance rules</strong>. All pass/fail logic is grounded in a versioned, structured rule set (see TRD §4) derived from the authoritative prep requirements provided for the challenge (e.g., FBA-style prep &amp; labelling requirements), parameterized by product category. The rule set — not the underlying vision/language model — is the source of truth for <em>what</em> to check and <em>what counts as compliant</em>; the model's role is <em>visual perception and evidence extraction</em> against that rule set.</p>
+<h2>8. Functional Requirements</h2>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Requirement</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FR1</td>
+<td>Accept one or more images + category metadata as a single &quot;prep review&quot; request</td>
+</tr>
+<tr>
+<td>FR2</td>
+<td>Determine, from category metadata + rule set, which checks are applicable to this unit</td>
+</tr>
+<tr>
+<td>FR3</td>
+<td>For each applicable check, output PASS/FAIL/UNCERTAIN with a human-readable reason and cited visual evidence</td>
+</tr>
+<tr>
+<td>FR4</td>
+<td>Perform OCR on labels to verify presence/legibility of suffocation warning text and expiry date</td>
+</tr>
+<tr>
+<td>FR5</td>
+<td>Perform spatial/geometric reasoning to judge FNSKU placement (flat surface vs. seam/curved edge/opening)</td>
+</tr>
+<tr>
+<td>FR6</td>
+<td>Detect and cross-check the original manufacturer barcode region for coverage</td>
+</tr>
+<tr>
+<td>FR7</td>
+<td>Flag a check as UNCERTAIN (never silently pass or fail) when image evidence is insufficient — e.g., poor lighting, occlusion, missing angle, non-visual property</td>
+</tr>
+<tr>
+<td>FR8</td>
+<td>Aggregate individual checks into one overall PREP STATUS using the rule in §6</td>
+</tr>
+<tr>
+<td>FR9</td>
+<td>Log every decision with the evidence used, for audit/appeal</td>
+</tr>
+<tr>
+<td>FR10</td>
+<td>Support human override/correction of any verdict, captured for future calibration</td>
+</tr>
+</tbody>
+</table>
+<h2>9. Non-Functional Requirements</h2>
+<ul>
+<li><strong>Reliability over confidence</strong>: false PASS is materially worse than false FAIL or UNCERTAIN; the system should be tuned conservatively.</li>
+<li><strong>Explainability</strong>: every verdict must be traceable to a specific rule ID and a specific piece of visual evidence.</li>
+<li><strong>Latency</strong>: near-real-time feedback at the prep station (target: single-digit seconds per unit).</li>
+<li><strong>Auditability</strong>: full decision trail retained for post-hoc compliance review.</li>
+<li><strong>Extensibility</strong>: new categories/checks addable via rule-set updates, without retraining or prompt-rewriting the core agent.</li>
+</ul>
+<h2>10. Success Metrics</h2>
+<ul>
+<li>Reduction in downstream compliance fees/issues tied to prep errors</li>
+<li>Precision/recall on each check type against human-reviewed ground truth (esp. false-PASS rate ≈ 0)</li>
+<li>% of reviews resolved as PASS/FAIL vs. UNCERTAIN (UNCERTAIN rate should reflect genuine evidence gaps, not model laziness)</li>
+<li>Operator time from photo capture to verdict</li>
+</ul>
+<h2>11. Test Scenarios (Acceptance Criteria)</h2>
+<ol>
+<li>Correctly sealed polybag → PASS across all checks</li>
+<li>Missing warning → FAIL, Suffocation Warning</li>
+<li>Obscured warning → FAIL or UNCERTAIN depending on legibility, with reason</li>
+<li>Incorrect FNSKU placement → FAIL, FNSKU, with placement reason</li>
+<li>FNSKU on a seam → FAIL, FNSKU, &quot;placed across seam/curved edge&quot;</li>
+<li>Original barcode visible/uncovered → FAIL, Original Barcode</li>
+<li>Covered expiry date → FAIL or UNCERTAIN, Expiry Date, &quot;not visible&quot;</li>
+<li>Missing handling mark → FAIL, Handling Marks</li>
+<li>Fully correct preparation → overall PASS</li>
+<li>Visually ambiguous preparation (e.g., angle doesn't show a required surface) → UNCERTAIN, not a guessed PASS/FAIL</li>
+</ol>
+<h2>12. Risks &amp; Mitigations</h2>
+<table>
+<thead>
+<tr>
+<th>Risk</th>
+<th>Mitigation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Model hallucinates a rule not in the reference set</td>
+<td>Hard-constrain checks to the structured rule set; model may only select/apply, not author, rules</td>
+</tr>
+<tr>
+<td>Overconfident verdict on poor-quality photo</td>
+<td>Require minimum evidence quality heuristics; default to UNCERTAIN below threshold</td>
+</tr>
+<tr>
+<td>Category misclassification changes which checks apply</td>
+<td>Validate/display category used for the review; allow operator correction</td>
+</tr>
+<tr>
+<td>OCR misses low-contrast or small print</td>
+<td>Multi-pass OCR + flag low-confidence text as UNCERTAIN rather than PASS</td>
+</tr>
+</tbody>
+</table>
+<h2>13. Open Questions</h2>
+<ul>
+<li>Which authoritative rule source/version governs at launch, and how are updates propagated?</li>
+<li>What image quality/angle guidance will operators be given at capture time?</li>
+<li>Is human review required on all FAIL/UNCERTAIN results before a unit is blocked, or is blocking automatic?</li>
+</ul>
+
+</body></html>

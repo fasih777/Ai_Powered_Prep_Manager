@@ -1,0 +1,81 @@
+{
+  "scenario_id": "scenario_04b",
+  "scenario_name": "FNSKU Label on Bottom Seam — Apparel in Polybag",
+  "expected_overall_verdict": "FAIL",
+  "image_file": "scenario_04b.jpg",
+  "source": "DALL-E 3 synthetic",
+  "note": "This is a second image submitted under scenario 4. It closely matches scenario 5 (FNSKU on seam) and has been annotated accordingly. The FNSKU label is placed at the bottom fold/seam region of the polybag, which is a compliance violation.",
+
+  "vlm_evidence": {
+    "polybag_bbox": {
+      "box_2d": [0, 0, 830, 1000],
+      "label": "polybag",
+      "confidence": 0.96
+    },
+    "fnsku_bbox": {
+      "box_2d": [580, 95, 770, 870],
+      "label": "fnsku_label",
+      "confidence": 0.97
+    },
+    "surface_classification": "seam",
+    "warning_text_ocr": "WARNING: TO AVOID DANGER OF SUFFOCATION, KEEP THIS PLASTIC BAG AWAY FROM BABIES AND CHILDREN. DO NOT USE THIS BAG IN CRIBS, BEDS, CARRIAGES OR PLAY PENS. THIS BAG IS NOT A TOY.",
+    "warning_text_confidence": 0.99,
+    "original_barcode_visible": false
+  },
+
+  "check_verdicts": {
+    "polybag_present":        { "verdict": "PASS",    "reason": "Transparent polybag clearly present enclosing the apparel item." },
+    "polybag_sealed":         { "verdict": "PASS",    "reason": "Bottom of bag shows a visible heat-seal seam. Bag is closed and secure." },
+    "fnsku_placement":        { "verdict": "FAIL",    "reason": "CRITICAL: FNSKU label X0042E7KX5 is placed directly at the bottom fold/seam of the polybag. The label bridges across the seam edge, causing it to wrinkle. Placement on a seam is a violation — barcode may not scan cleanly." },
+    "fnsku_surface":          { "verdict": "FAIL",    "reason": "Surface classification: seam. FNSKU label is not placed on a flat, smooth polybag surface." },
+    "suffocation_warning":    { "verdict": "PASS",    "reason": "Full, extended suffocation warning is printed in large, bold text at the top of the polybag. Fully compliant." },
+    "suffocation_legibility": { "verdict": "PASS",    "reason": "Text is high contrast, sharp, no wrinkles or obstructions. Also includes extended text about cribs, beds, carriages — exceeds minimum requirement." },
+    "manufacturer_barcode":   { "verdict": "PASS",    "reason": "No original UPC/EAN barcode visible. Item is opaque black fabric — no through-the-bag barcode exposure detected." }
+  },
+
+  "annotations": [
+    {
+      "label": "Polybag",
+      "color": "#22c55e",
+      "box_2d": [0, 0, 830, 1000],
+      "note": "Transparent polybag — sealed at bottom"
+    },
+    {
+      "label": "✅ Suffocation Warning — PASS",
+      "color": "#22c55e",
+      "box_2d": [0, 0, 220, 1000],
+      "note": "Full extended warning: 'WARNING: TO AVOID DANGER OF SUFFOCATION... THIS BAG IS NOT A TOY.' — fully legible, bold, high contrast"
+    },
+    {
+      "label": "Recycling Symbol (PE-LD 04) + Made in China",
+      "color": "#6b7280",
+      "box_2d": [220, 250, 560, 750],
+      "note": "Polymer identification code and country of origin — informational, not a compliance check"
+    },
+    {
+      "label": "⚠ FNSKU on SEAM — FAIL",
+      "color": "#ef4444",
+      "box_2d": [580, 95, 770, 870],
+      "note": "Label X0042E7KX5 is placed at/across the bottom fold seam of the polybag. surface_classification: seam. Barcode scannability risk."
+    }
+  ],
+
+  "quality_flags": {
+    "blur_score": 0.93,
+    "brightness_ok": true,
+    "resolution_ok": true,
+    "all_angles_present": false,
+    "notes": "Close-up front/bottom view. Excellent training image for seam detection — the bottom fold of the polybag and the label bridging it are clearly visible. Warning text at top is pristine and provides a strong positive OCR training sample."
+  },
+
+  "training_notes": {
+    "primary_failure": "fnsku_on_seam",
+    "failures_count": 1,
+    "passes_count": 5,
+    "prd_rules_triggered": [
+      "PRD §5.1 — FNSKU label must be applied to a flat, smooth surface. Placement across a seam, fold, or curved edge is prohibited."
+    ],
+    "vrd_model_learning_value": "VERY HIGH — This image is a perfect counterexample to scenario 1. It has an excellent warning (PASS) but fails on seam placement. The model must learn to evaluate each check independently — a good warning does NOT compensate for bad FNSKU placement.",
+    "dataset_contrast_pair": "scenario_01 (all PASS) vs scenario_04b (warning PASS but FNSKU seam FAIL)"
+  }
+}

@@ -1,0 +1,97 @@
+{
+  "scenario_id": "scenario_06",
+  "scenario_name": "Original Manufacturer Barcode Uncovered — Etekcity Kitchen Scale",
+  "expected_overall_verdict": "FAIL",
+  "image_file": "scenario_06.jpg",
+  "source": "DALL-E 3 synthetic",
+
+  "vlm_evidence": {
+    "polybag_bbox": {
+      "box_2d": [10, 55, 990, 975],
+      "label": "polybag",
+      "confidence": 0.97
+    },
+    "fnsku_bbox": null,
+    "surface_classification": "flat",
+    "warning_text_ocr": "WARNING: To avoid danger of suffocation, keep this plastic bag away from babies and children. Do not use this bag in cribs, beds, carriages or playpens. This bag is not a toy.",
+    "warning_text_confidence": 0.99,
+    "original_barcode_visible": true
+  },
+
+  "check_verdicts": {
+    "polybag_present":        { "verdict": "PASS",      "reason": "Transparent polybag is present enclosing the product box." },
+    "polybag_sealed":         { "verdict": "UNCERTAIN", "reason": "Top of the polybag edges appear loose/open. Cannot confirm heat-seal from this angle." },
+    "fnsku_placement":        { "verdict": "FAIL",      "reason": "CRITICAL: No FNSKU label found anywhere on the polybag. The product has not been labelled with an FNSKU at all. fnsku_bbox: null." },
+    "fnsku_surface":          { "verdict": "FAIL",      "reason": "No FNSKU label present — surface classification is irrelevant, check fails by absence." },
+    "suffocation_warning":    { "verdict": "PASS",      "reason": "Full extended suffocation warning clearly printed at the top of the polybag." },
+    "suffocation_legibility": { "verdict": "PASS",      "reason": "Warning text is sharp, bold, high-contrast, and fully legible." },
+    "manufacturer_barcode":   { "verdict": "FAIL",      "reason": "CRITICAL: Original Etekcity UPC-A barcode '8 10040 94307 1' is completely visible and scannable through the transparent polybag on the bottom-right of the product box. No FNSKU label has been placed over it." }
+  },
+
+  "annotations": [
+    {
+      "label": "Polybag",
+      "color": "#22c55e",
+      "box_2d": [10, 55, 990, 975],
+      "note": "Transparent polybag present"
+    },
+    {
+      "label": "✅ Suffocation Warning — PASS",
+      "color": "#22c55e",
+      "box_2d": [10, 55, 310, 975],
+      "note": "OCR: 'WARNING: To avoid danger of suffocation, keep this plastic bag away from babies and children. Do not use this bag in cribs, beds, carriages or playpens. This bag is not a toy.' — fully legible"
+    },
+    {
+      "label": "⚠ OPEN SEAL — UNCERTAIN",
+      "color": "#f59e0b",
+      "box_2d": [10, 55, 80, 975],
+      "note": "Top polybag edges appear loose and open — seal status cannot be confirmed from front view"
+    },
+    {
+      "label": "⚠ NO FNSKU LABEL — FAIL",
+      "color": "#ef4444",
+      "box_2d": [310, 55, 990, 975],
+      "note": "No FNSKU label found anywhere on the polybag surface. Product is not FBA-ready."
+    },
+    {
+      "label": "❌ EXPOSED UPC '8 10040 94307 1' — FAIL",
+      "color": "#ef4444",
+      "box_2d": [730, 560, 955, 920],
+      "note": "Etekcity manufacturer UPC-A barcode fully visible and scannable through clear polybag. Must be covered by FNSKU label."
+    },
+    {
+      "label": "Etekcity Kitchen Scale EK6015 box",
+      "color": "#6b7280",
+      "box_2d": [310, 100, 955, 975],
+      "note": "Product box fully visible through clear polybag. Brand, model, and all spec text readable."
+    }
+  ],
+
+  "quality_flags": {
+    "blur_score": 0.97,
+    "brightness_ok": true,
+    "resolution_ok": true,
+    "all_angles_present": false,
+    "notes": "Excellent image quality and lighting. Best training image for the 'original_barcode_visible: true' class. The barcode is large, clear, and unambiguous. Also provides a strong negative training example for FNSKU absence (fnsku_bbox: null)."
+  },
+
+  "extracted_barcode": {
+    "symbology": "UPC-A",
+    "decoded_value": "810040943071",
+    "human_readable": "8 10040 94307 1",
+    "location_on_image": "bottom-right of product box",
+    "scannable": true
+  },
+
+  "training_notes": {
+    "primary_failure": "original_barcode_visible",
+    "secondary_failure": "fnsku_label_absent",
+    "tertiary_concern": "polybag_seal_uncertain",
+    "failures_count": 3,
+    "prd_rules_triggered": [
+      "PRD §5.2 — An FNSKU label must be applied to cover all original manufacturer barcodes before the unit can be inbounded.",
+      "PRD §5.1 — All units must have a valid FNSKU label affixed to the polybag."
+    ],
+    "vrd_model_learning_value": "CRITICAL — This is the highest-value FAIL image in the dataset. It teaches the model three things simultaneously: (1) detect exposed manufacturer barcodes through clear polybag, (2) detect complete FNSKU absence (fnsku_bbox: null), (3) still correctly read the compliant warning. The VLM must learn that a good warning does not compensate for uncovered original barcodes."
+  }
+}

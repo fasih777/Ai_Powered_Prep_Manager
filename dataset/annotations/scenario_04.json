@@ -1,0 +1,87 @@
+{
+  "scenario_id": "scenario_04",
+  "scenario_name": "Unsealed Polybag — Electronics with USB Cable",
+  "expected_overall_verdict": "FAIL",
+  "image_file": "scenario_04.jpg",
+  "source": "DALL-E 3 synthetic",
+
+  "vlm_evidence": {
+    "polybag_bbox": {
+      "box_2d": [15, 40, 985, 970],
+      "label": "polybag",
+      "confidence": 0.97
+    },
+    "fnsku_bbox": {
+      "box_2d": [720, 105, 870, 895],
+      "label": "fnsku_label",
+      "confidence": 0.97
+    },
+    "surface_classification": "flat",
+    "warning_text_ocr": "",
+    "warning_text_confidence": 0.03,
+    "original_barcode_visible": false
+  },
+
+  "check_verdicts": {
+    "polybag_present":        { "verdict": "PASS",    "reason": "Transparent outer polybag is clearly present enclosing the electronic device and USB cable." },
+    "polybag_sealed":         { "verdict": "FAIL",    "reason": "CRITICAL: Polybag top opening is visibly open and unsecured — plastic edges are splayed apart with no heat-seal, tape, or closure of any kind." },
+    "fnsku_placement":        { "verdict": "PASS",    "reason": "FNSKU label X0034H1QAJ is affixed flat on the lower front surface of the polybag, not crossing any seam or edge." },
+    "fnsku_surface":          { "verdict": "PASS",    "reason": "Surface classification: flat. Label is smooth and not placed on an opening, seam, or curved edge." },
+    "suffocation_warning":    { "verdict": "FAIL",    "reason": "No suffocation warning text visible anywhere on the polybag surface — front, back, or bottom." },
+    "suffocation_legibility": { "verdict": "FAIL",    "reason": "Not applicable — suffocation warning is entirely absent." },
+    "manufacturer_barcode":   { "verdict": "UNCERTAIN","reason": "Inner product is wrapped in an opaque black bag within the outer polybag. Original manufacturer barcode on the inner device is not visible from this angle — cannot confirm coverage." }
+  },
+
+  "annotations": [
+    {
+      "label": "Polybag",
+      "color": "#22c55e",
+      "box_2d": [15, 40, 985, 970],
+      "note": "Outer polybag present"
+    },
+    {
+      "label": "⚠ OPEN SEAL — FAIL",
+      "color": "#ef4444",
+      "box_2d": [15, 40, 85, 970],
+      "note": "Top opening is completely unsecured — plastic edges visibly splayed. No heat-seal or tape."
+    },
+    {
+      "label": "FNSKU Label — X0034H1QAJ",
+      "color": "#3b82f6",
+      "box_2d": [720, 105, 870, 895],
+      "note": "Flat placement on front surface — PASS. Note: no FNSKU title header visible on this label."
+    },
+    {
+      "label": "⚠ WARNING ABSENT — FAIL",
+      "color": "#ef4444",
+      "box_2d": [870, 40, 985, 970],
+      "note": "No suffocation warning printed anywhere on this bag."
+    },
+    {
+      "label": "Inner Black Bag",
+      "color": "#a855f7",
+      "box_2d": [80, 200, 720, 800],
+      "note": "Inner product is wrapped in an opaque black bag — original barcode occlusion UNCERTAIN."
+    }
+  ],
+
+  "quality_flags": {
+    "blur_score": 0.94,
+    "brightness_ok": true,
+    "resolution_ok": true,
+    "all_angles_present": false,
+    "notes": "Front-facing image only. Crinkled/wrinkled polybag in the mid-section is a valuable real-world training example. Open top seal is clearly visible and unambiguous."
+  },
+
+  "training_notes": {
+    "primary_failure": "polybag_unsealed",
+    "secondary_failure": "suffocation_warning_absent",
+    "tertiary_concern": "original_barcode_uncertain_due_to_inner_bag",
+    "failures_count": 2,
+    "prd_rules_triggered": [
+      "PRD §3.1 — Polybag must be sealed prior to inbound. An open bag is an immediate FAIL.",
+      "PRD §4.2 — All polybags must carry a printed suffocation warning."
+    ],
+    "vrd_model_learning_value": "HIGH — This image teaches the model two distinct failure modes in one shot: (1) recognise open top seam geometry as unsealed, (2) confirm absent warning. Also introduces the UNCERTAIN pattern for barcodes hidden by inner secondary packaging."
+  }
+}
