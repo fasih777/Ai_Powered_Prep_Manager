@@ -24,9 +24,12 @@ export function BottomNav({ role, isLabEnabled = false }: BottomNavProps) {
   const [isMoreOpen, setIsMoreOpen] = useState(false);
   const allNavItems = getNavItemsForRole(role, isLabEnabled);
 
-  // Exactly 3 primary slots + 1 'More' button if more items exist
-  const primaryItems = allNavItems.slice(0, 3);
-  const overflowItems = allNavItems.slice(3);
+  // Enforce max 4 slots total:
+  // If role has <= 4 nav items, show them all with no "More".
+  // If more than 4, show first 3 plus "More" (opening the Sheet with the rest in Blueprint order).
+  const hasOverflow = allNavItems.length > 4;
+  const primaryItems = hasOverflow ? allNavItems.slice(0, 3) : allNavItems;
+  const overflowItems = hasOverflow ? allNavItems.slice(3) : [];
 
   const isOverflowActive = overflowItems.some(
     (item) =>

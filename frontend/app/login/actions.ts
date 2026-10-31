@@ -6,6 +6,7 @@ import { createSupabaseServerClient } from '../../lib/supabase/server';
 export async function login(formData: FormData) {
   const email = String(formData.get('email') ?? '');
   const password = String(formData.get('password') ?? '');
+  const next = String(formData.get('next') ?? '') || '/';
 
   const supabase = createSupabaseServerClient();
 
@@ -15,8 +16,9 @@ export async function login(formData: FormData) {
   });
 
   if (error) {
-    redirect(`/login?error=${encodeURIComponent(error.message)}`);
+    const nextParam = next && next !== '/' ? `&next=${encodeURIComponent(next)}` : '';
+    redirect(`/login?error=${encodeURIComponent(error.message)}${nextParam}`);
   }
 
-  redirect('/');
+  redirect(next);
 }

@@ -10,6 +10,7 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        // Blueprint §3.2 exact tokens
         bg: 'var(--bg)',
         surface: {
           DEFAULT: 'var(--surface)',
@@ -31,6 +32,19 @@ const config: Config = {
         },
         focus: 'var(--focus)',
         canvas: 'var(--canvas)',
+
+        // Blueprint flat verdict tokens
+        'pass-fg': 'var(--pass-fg)',
+        'pass-bg': 'var(--pass-bg)',
+        'pass-line': 'var(--pass-line)',
+        'fail-fg': 'var(--fail-fg)',
+        'fail-bg': 'var(--fail-bg)',
+        'fail-line': 'var(--fail-line)',
+        'unc-fg': 'var(--unc-fg)',
+        'unc-bg': 'var(--unc-bg)',
+        'unc-line': 'var(--unc-line)',
+
+        // Blueprint nested verdict tokens
         verdict: {
           pass: {
             fg: 'var(--pass-fg)',
@@ -47,6 +61,29 @@ const config: Config = {
             bg: 'var(--unc-bg)',
             line: 'var(--unc-line)',
           },
+        },
+
+        // Alias layer for bench-* and status-* compatibility
+        bench: {
+          paper: 'var(--bg)',
+          surface: 'var(--surface)',
+          sunken: 'var(--surface-sunken)',
+          ink: 'var(--ink)',
+          muted: 'var(--ink-muted)',
+          line: 'var(--line)',
+          'line-strong': 'var(--line-strong)',
+          brand: 'var(--brand)',
+        },
+        status: {
+          pass: 'var(--pass-fg)',
+          'pass-bg': 'var(--pass-bg)',
+          'pass-line': 'var(--pass-line)',
+          fail: 'var(--fail-fg)',
+          'fail-bg': 'var(--fail-bg)',
+          'fail-line': 'var(--fail-line)',
+          unc: 'var(--unc-fg)',
+          'unc-bg': 'var(--unc-bg)',
+          'unc-line': 'var(--unc-line)',
         },
       },
       fontFamily: {
