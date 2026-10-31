@@ -1,7 +1,43 @@
-{ 
+{
   "extends": "next/core-web-vitals",
   "rules": {
     "react/no-unescaped-entities": "off",
-    "@next/next/no-img-element": "off"
-  }
+    "@next/next/no-img-element": "off",
+    "no-restricted-imports": [
+      "error",
+      {
+        "patterns": [
+          {
+            "group": ["**/lib/lab/**", "@/lib/lab/**"],
+            "message": "Invariant I2: lib/lab/* must never be imported by production routes."
+          },
+          {
+            "group": ["**/components/lab/**", "@/components/lab/**"],
+            "message": "Lab components must never be imported by production routes."
+          },
+          {
+            "group": [
+              "**/lib/rules/ruleEngine*",
+              "@/lib/rules/ruleEngine*",
+              "**/lib/scenarios/testScenarios*",
+              "@/lib/scenarios/testScenarios*",
+              "**/lib/cv/imagePreprocessing*",
+              "@/lib/cv/imagePreprocessing*",
+              "**/lib/queue/celeryQueueEngine*",
+              "@/lib/queue/celeryQueueEngine*"
+            ],
+            "message": "Legacy ruleEngine/scenarios/lab modules have been moved to lib/lab and are forbidden in production routes."
+          }
+        ]
+      }
+    ]
+  },
+  "overrides": [
+    {
+      "files": ["**/lab/**", "**/lab/**/*"],
+      "rules": {
+        "no-restricted-imports": "off"
+      }
+    }
+  ]
 }
