@@ -6,20 +6,11 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  const requestHeaders = new Headers(request.headers);
-  requestHeaders.set('x-pathname', request.nextUrl.pathname);
-  requestHeaders.set('x-url', request.nextUrl.pathname + request.nextUrl.search);
-
-  let response = NextResponse.next({
-    request: {
-      headers: requestHeaders,
-    },
-  });
+  let response = NextResponse.next({ request });
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    (process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)!,
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
     {
       cookies: {
         getAll() {
@@ -30,11 +21,7 @@ export async function middleware(request: NextRequest) {
             request.cookies.set(name, value);
           });
 
-          response = NextResponse.next({
-            request: {
-              headers: requestHeaders,
-            },
-          });
+          response = NextResponse.next({ request });
 
           cookiesToSet.forEach(({ name, value, options }) => {
             response.cookies.set(name, value, options);
@@ -44,13 +31,25 @@ export async function middleware(request: NextRequest) {
     },
   );
 
-  await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  // API requests are proxied to FastAPI, which owns API authorization. Do not
+  // redirect fetch/XHR calls to the login page from Next middleware.
+  const isProtectedRoute = request.nextUrl.pathname.startsWith('/dashboard');
+
+  if (isProtectedRoute && !user) {
+    return NextResponse.redirect(new URL('/login', request.url));
+  }
 
   return response;
 }
 
 export const config = {
   matcher: [
+    '/dashboard/:path*',
+    '/api/v1/:path*',
     '/((?!_next/static|_next/image|favicon.ico).*)',
   ],
 };
